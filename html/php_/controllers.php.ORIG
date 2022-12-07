@@ -76,10 +76,10 @@ include('menu.php');
     <div id="login">
       <form action="subphp_/script.php" method="post">
         <h3 align="center" style="color:blue">TIME RANGE SETTINGS</h3>
-        <b>Start time: <br><i><?php $output=shell_exec("/var/www/html/ownpan/script_/MANAGE_tr showTRON"); print_r($output); ?></i>
+        <b>Start time: <br><i><?php $output=shell_exec("/var/www/html/script_/MANAGE_tr showTRON"); print_r($output); ?></i>
         <input id="tron" name="tron" placeholder="HH:MM" type="text">
         <br>
-        <b>Stop time: <br><i><?php $output=shell_exec("/var/www/html/ownpan/script_/MANAGE_tr showTROFF"); print_r($output); ?></i>
+        <b>Stop time: <br><i><?php $output=shell_exec("/var/www/html/script_/MANAGE_tr showTROFF"); print_r($output); ?></i>
         <input id="troff" name="troff" placeholder="HH:MM" type="text">
         <input name="submit" type="submit" value="Submit">
       </form>
@@ -88,7 +88,7 @@ include('menu.php');
 
     <div id="login">
       <form action="subphp_/script.php" method="post">
-      <b>Exchange host IP address: <br><i><?php $output=shell_exec("/var/www/html/ownpan/script_/MANAGE_exchange"); print_r($output); ?></i></b>
+      <b>Exchange host IP address: <br><i><?php $output=shell_exec("/var/www/html/script_/MANAGE_exchange"); print_r($output); ?></i></b>
         <input id="exch-ip" name="exch-ip" placeholder="Insert new IP address for the exchange" type="text">
         <input name="submit" type="submit" value="Change">
       </form>
@@ -96,7 +96,7 @@ include('menu.php');
 
     <div id="login">
       <form action="subphp_/script.php" method="post">
-      <b>Queue name: <br><i><?php $output=shell_exec("/var/www/html/ownpan/script_/MANAGE_queue"); print_r($output); ?></i></b>
+      <b>Queue name: <br><i><?php $output=shell_exec("/var/www/html/script_/MANAGE_queue"); print_r($output); ?></i></b>
         <input id="queue_name" name="queue_name" placeholder="Insert new queue name" type="text">
         <input name="submit" type="submit" value="Change">
       </form>

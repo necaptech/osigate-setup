@@ -13,7 +13,7 @@ if [[ ! $command ]]; then
   fi
   exit
 fi
-#echo "$(date)MANAGE System usb Issued $command with value $value1" >> /var/www/html/ownpan/logs_/log.txt
+#echo "$(date)MANAGE System usb Issued $command with value $value1" >> /var/www/html/logs_/log.txt
 
 case $command in
   change) sed "s%$myStatus%$value1%g" /etc/wvdial.conf >/tmp/wvdial.conf

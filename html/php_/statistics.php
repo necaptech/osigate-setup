@@ -11,7 +11,7 @@
        <br />
 <!--
        < input type="radio" name="mysql-query" value="11a"/> Search < b>Received< /b>
-         < ?php $output=shell_exec("/var/www/html/ownpan/script_/STATISTIC_mysql advquery 1"); print_r($output); ? >
+         < ?php $output=shell_exec("/var/www/html/script_/STATISTIC_mysql advquery 1"); print_r($output); ? >
        < br / >
 -->
        <br />
@@ -19,7 +19,7 @@
        <br />
 <!--
        < input type="radio" name="mysql-query" value="14a"/> Search old < b>Uploaded< /b>
-         < ?php $output=shell_exec("/var/www/html/ownpan/script_/STATISTIC_mysql advquery 2"); print_r($output); ? >
+         < ?php $output=shell_exec("/var/www/html/script_/STATISTIC_mysql advquery 2"); print_r($output); ? >
        < br / >
 -->
        <br />
@@ -27,7 +27,7 @@
        <br />
 <!--
        < input type="radio" name="mysql-query" value="3a"/> Search old < b>Not Uploaded< /b>
-         < ?php $output=shell_exec("/var/www/html/ownpan/script_/STATISTIC_mysql stdquery 11"); print_r($output); ? >
+         < ?php $output=shell_exec("/var/www/html/script_/STATISTIC_mysql stdquery 11"); print_r($output); ? >
        < br / >
 -->
        <br />

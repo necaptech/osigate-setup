@@ -1,6 +1,6 @@
 #!/bin/bash
 
-proc_list=$(cat /var/www/html/ownpan/data_/Processes.cnf)
+proc_list=$(cat /var/www/html/data_/Processes.cnf)
 
 if [[ ! $proc_list ]]; then
   echo -e "<pre> Not Found </pre>"

@@ -12,7 +12,7 @@ myStatus=$(/usr/bin/sudo /etc/init.d/apache2 status | grep running)
 #  fi
 #  exit
 #fi
-#echo "$(date)MANAGE Httpd Issued $command" >> /var/www/html/ownpan/logs_/log.txt
+#echo "$(date)MANAGE Httpd Issued $command" >> /var/www/html/logs_/log.txt
 #case $command in
 #  reload) /usr/bin/sudo /etc/init.d/apache2 reload
 #  ;;
