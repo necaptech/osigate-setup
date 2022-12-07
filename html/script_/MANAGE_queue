@@ -13,7 +13,7 @@ myStatus=$(cat /srv/data/queue_name)
   fi
   exit
 fi
-#echo "$(date)MANAGE queue change Issued $command with value $value1" >> /var/www/html/ownpan/logs_/log.txt
+#echo "$(date)MANAGE queue change Issued $command with value $value1" >> /var/www/html/logs_/log.txt
 
 case $command in
   change) echo -e "$value1" >/srv/data/queue_name

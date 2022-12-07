@@ -1,6 +1,6 @@
 #!/bin/bash
 
-conf=/var/www/html/ownpan/conf_/basic.php
+conf=/var/www/html/conf_/basic.php
 dbuser=$(/bin/grep dbuser $conf|cut -d= -f2|sed 's/\"//g'|sed 's/;//g')
 dbpass=$(/bin/grep dbpass $conf|cut -d= -f2|sed 's/\"//g'|sed 's/;//g')
 dbname=$(/bin/grep dbname $conf|cut -d= -f2|sed 's/\"//g'|sed 's/;//g')
@@ -10,7 +10,7 @@ dblogin="-u$dbuser -p$dbpass $dbname"
 command=$1
 value1=$2
 
-downloadpath=/var/www/html/ownpan/download
+downloadpath=/var/www/html/download
 
 goBack(){
 echo -e "<form action='../statistics.php'>"
@@ -101,13 +101,13 @@ echo -e "</table>"
 goBack
 }
 mode5(){
-filename=/var/www/html/ownpan/download/AllDatabases_$(date +"%d%m%Y-%H%M%S").db
+filename=/var/www/html/download/AllDatabases_$(date +"%d%m%Y-%H%M%S").db
 /usr/bin/mysqldump -u$dbuser -p$dbpass --all-databases > $filename
 /bin/gzip -9 $filename
 echo -e "<a href='../../download/'><b>Go To Download Area</b></a>"
 }
 mode6(){
-filename=/var/www/html/ownpan/download/CurrentTable_$(date +"%d%m%Y-%H%M%S").db
+filename=/var/www/html/download/CurrentTable_$(date +"%d%m%Y-%H%M%S").db
 /usr/bin/mysqldump -u$dbuser -p$dbpass $dbname $dbtbdec > $filename
 /bin/gzip -9 $filename
 echo -e "<a href='../../download/'><b>Go To Download Area</b></a>"
@@ -229,7 +229,7 @@ case $value1 in
   11) #select * from DEC_INPUT_TB where UPLOADED='n' ORDER BY ID DESC LIMIT 50;
      mode11
   ;;
-  *) echo "$(date) STATISTICS mysql called with some error on value1 $value1" >> /var/www/html/ownpan/logs_/log.txt
+  *) echo "$(date) STATISTICS mysql called with some error on value1 $value1" >> /var/www/html/logs_/log.txt
   ;;
 esac
 }
@@ -245,7 +245,7 @@ case $value1 in
   7) #delete all dumps
      mode7
   ;;
-  *) echo "$(date) STATISTICS mysql called with some error on value1 $value1" >> /var/www/html/ownpan/logs_/log.txt
+  *) echo "$(date) STATISTICS mysql called with some error on value1 $value1" >> /var/www/html/logs_/log.txt
   ;;
 esac
 }
@@ -261,16 +261,16 @@ case $value1 in
   10)#delete all exports
      mode10
   ;;
-  *) echo "$(date) STATISTICS mysql called with some error on value1 $value1" >> /var/www/html/ownpan/logs_/log.txt
+  *) echo "$(date) STATISTICS mysql called with some error on value1 $value1" >> /var/www/html/logs_/log.txt
   ;;
 esac
 }
 
 if [[ ! $command ]]; then
-  echo "$(date) STATISTICS mysql called with no options.." >> /var/www/html/ownpan/logs_/log.txt
+  echo "$(date) STATISTICS mysql called with no options.." >> /var/www/html/logs_/log.txt
   exit
 else
-  echo "$(date) STATISTICS DEBUGB - command = $command , value1 = $value1" >> /var/www/html/ownpan/logs_/log.txt
+  echo "$(date) STATISTICS DEBUGB - command = $command , value1 = $value1" >> /var/www/html/logs_/log.txt
   case $command in
     query) query_fun
     ;;

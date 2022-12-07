@@ -1,6 +1,6 @@
 #!/bin/bash
 
-mySysName=$(cat /var/www/html/ownpan/data_/SystemName.cnf)
+mySysName=$(cat /var/www/html/data_/SystemName.cnf)
 
 if [[ $mySysName ]]; then
   echo -e "<pre> $mySysName </pre>"

@@ -10,22 +10,22 @@
        <input type="radio" name="mysql-query" value="11"/> Search last <b>Received</b> data <b>n.</b> [100] (All Clients)
        <br />
        <input type="radio" name="mysql-query" value="11a"/> Search old <b>Received</b>
-         <?php $output=shell_exec("/var/www/html/ownpan/script_/STATISTIC_mysql advquery 1"); print_r($output); ?>
+         <?php $output=shell_exec("/var/www/html/script_/STATISTIC_mysql advquery 1"); print_r($output); ?>
        <br />
        <input type="radio" name="mysql-query" value="14"/> Search last <b>Uploaded</b> data <b>n.</b> [100] (All Clients)
        <br />
        <input type="radio" name="mysql-query" value="14a"/> Search old <b>Uploaded</b>
-         <?php $output=shell_exec("/var/www/html/ownpan/script_/STATISTIC_mysql advquery 2"); print_r($output); ?>
+         <?php $output=shell_exec("/var/www/html/script_/STATISTIC_mysql advquery 2"); print_r($output); ?>
        <br />
        <input type="radio" name="mysql-query" value="3"/> Search last <b>Not Uploaded</b> data <b>n.</b> [100] (All Clients)
        <br />
        <input type="radio" name="mysql-query" value="3a"/> Search old <b>Not Uploaded</b>
-         <?php $output=shell_exec("/var/www/html/ownpan/script_/STATISTIC_mysql stdquery 11"); print_r($output); ?>
+         <?php $output=shell_exec("/var/www/html/script_/STATISTIC_mysql stdquery 11"); print_r($output); ?>
        <br />
        <input type="radio" name="mysql-query" value="15"/> Search last <b>Hex</b> data <b>n.</b> [100] (All Clients)
        <br />
        <input type="radio" name="mysql-query" value="15a"/> Search old <b>Hex</b>
-         <?php $output=shell_exec("/var/www/html/ownpan/script_/STATISTIC_mysql timequery 3"); print_r($output); ?>
+         <?php $output=shell_exec("/var/www/html/script_/STATISTIC_mysql timequery 3"); print_r($output); ?>
        <br />
        <input type="radio" name="mysql-query" value="4"/> Search last <b>Slow Uploads</b> data <b>n.</b> [50] 
        <br />

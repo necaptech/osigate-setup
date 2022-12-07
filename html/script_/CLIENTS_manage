@@ -1,6 +1,6 @@
 #!/bin/bash
 
-dbconf=/var/www/html/ownpan/conf_/basic.php
+dbconf=/var/www/html/conf_/basic.php
 dbuser=$(/bin/grep dbuser $dbconf|cut -d= -f2|sed 's/\"//g'|sed 's/;//g')
 dbpass=$(/bin/grep dbpass $dbconf|cut -d= -f2|sed 's/\"//g'|sed 's/;//g')
 dbname=$(/bin/grep dbname $dbconf|cut -d= -f2|sed 's/\"//g'|sed 's/;//g')

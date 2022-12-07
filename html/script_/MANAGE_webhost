@@ -12,7 +12,7 @@ myStatus=$(cat /srv/data/webhost)
   fi
   exit
 fi
-#echo "$(date)MANAGE System process Issued $command with value $value1" >> /var/www/html/ownpan/logs_/log.txt
+#echo "$(date)MANAGE System process Issued $command with value $value1" >> /var/www/html/logs_/log.txt
 
 case $command in
   change)  #Change value

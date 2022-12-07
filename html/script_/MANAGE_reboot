@@ -12,7 +12,7 @@ myStatus=$(/usr/bin/uptime)
   fi
   exit
 fi
-echo "$(date)MANAGE System reboot Issued $command" >> /var/www/html/ownpan/logs_/log.txt
+echo "$(date)MANAGE System reboot Issued $command" >> /var/www/html/logs_/log.txt
 case $command in
   reboot) /usr/bin/sudo /sbin/init 6
   ;;
