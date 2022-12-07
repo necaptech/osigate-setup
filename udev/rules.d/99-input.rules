@@ -1,0 +1,4 @@
+#067b:2303
+#ACTION=="add", SUBSYSTEM=="tty", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", ATTRS{bMaxPower}=="90mA", SYMLINK+="ttyWIFI"
+ACTION=="add", SUBSYSTEM=="tty", ATTRS{idVendor}=="067b", ATTRS{idProduct}=="2303", SYMLINK+="ttyWIFI"
+

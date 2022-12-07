@@ -1,0 +1,22 @@
+#!/bin/bash
+
+srvIp=10.8.0.1
+srvPort=80
+srvPage=add.php
+cmdip=$(which ip)
+cmdcurl=$(which curl)
+cmdping=$(which ping)
+optcurl="--connect-timeout 5 --max-time 10"
+sysName=$(cat /srv/data/sysname)
+vpnMgt="/etc/init.d/openvpn"
+
+sleep $[ ($RANDOM % 100 ) ]
+tunnelStatus=$($cmdping -w3 $srvIp | grep loss | awk '{print$6}')
+
+if [[ $tunnelStatus == 100% ]]; then
+    $vpnMgt restart
+    sleep 33
+fi
+
+getVpn=$($cmdip a |egrep "tun[0-9]{1,2}" |grep inet |awk '{print $2}'|cut -d/ -f1)
+$cmdcurl $optcurl -d name=$sysName -d vpn_add=$getVpn http://$srvIp:$srvPort/$srvPage

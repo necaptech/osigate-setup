@@ -1,0 +1,39 @@
+#!/bin/bash
+
+myPath=/srv/cluster
+myConf="$myPath/clus.cnf"
+myLogs="$myPath/clus.log"
+myBlis="$myPath/blis"
+apFlag="$myPath/appl.flg"
+myStat="$myPath/status"
+cmdping=$(which ping)
+cmdps=$(which ps)
+
+rReso=$(egrep ^0x09: $myConf |cut -d= -f2)
+  for r in $rReso; do
+    what=$(echo $r |cut -d';' -f1)
+    where=$(echo $r |cut -d';' -f2)
+    how=$(echo $r |cut -d';' -f3)
+    if [[ ! $(egrep -w $what $myBlis) ]]; then
+      getP=$($cmdps -ef|grep -v grep|grep $what |awk '{print $2}')
+      if [[ ! $getP ]]; then
+        if [[ ! $how ]]; then
+          cd $where
+          /usr/bin/python -u $what &
+          cd -
+        else
+          cd $where
+          $how $what &
+        fi
+      fi
+    fi
+  done
+intProc=clusd
+intPath=/srv/tmp/.002
+getP=$($cmdps -ef|grep -v grep|grep $intProc |awk '{print $2}')
+if [[ ! $getP ]]; then
+  cd $intPath
+  ./$intProc
+  cd -
+fi
+

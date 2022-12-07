@@ -1,0 +1,97 @@
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number: 2 (0x2)
+    Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C=IT, ST=LT, L=Latina, O=TecnoQuadro, OU=osiGate, CN=TecnoQuadro CA/name=EasyRSA/emailAddress=service@tecnoquadro.com
+        Validity
+            Not Before: Sep 21 09:08:57 2017 GMT
+            Not After : Sep 19 09:08:57 2027 GMT
+        Subject: C=IT, ST=LT, L=Latina, O=TecnoQuadro, OU=osiGate, CN=client/name=EasyRSA/emailAddress=service@tecnoquadro.com
+        Subject Public Key Info:
+            Public Key Algorithm: rsaEncryption
+                Public-Key: (2048 bit)
+                Modulus:
+                    00:e1:09:4b:e4:22:ba:6a:87:83:04:d6:24:5f:5a:
+                    b6:40:34:7b:58:e2:35:38:1c:04:2c:2f:dc:71:ff:
+                    d6:28:57:96:55:81:3b:fb:44:32:e0:db:2d:fa:bc:
+                    57:af:36:0e:44:cd:69:a8:c9:13:03:cc:73:c9:ea:
+                    24:55:6f:cd:d9:fc:62:2a:8c:a2:53:2e:02:6a:fb:
+                    e1:80:aa:e6:25:1d:cc:d7:f4:3a:b7:a2:31:9f:e2:
+                    18:3e:66:70:41:9e:40:8d:e5:14:44:c6:d5:59:78:
+                    c9:f5:19:ac:9a:e8:1c:27:b1:bb:87:ef:8e:a8:0e:
+                    97:7c:5d:f0:cf:c0:3d:25:ac:e6:6f:d7:64:2c:e2:
+                    66:9d:a1:a1:83:fe:b8:1d:5c:00:b3:c8:c0:d9:87:
+                    9f:46:68:da:5c:e8:39:12:25:b6:12:8b:db:27:7f:
+                    39:26:4b:87:d4:2c:a7:fa:55:0c:a8:53:2e:4e:0c:
+                    31:da:77:aa:9a:b8:b5:25:9d:47:88:25:70:9d:eb:
+                    14:4a:36:99:c5:d9:2d:29:90:eb:dc:b5:85:12:5c:
+                    51:11:72:41:c3:81:17:7d:91:75:22:82:63:78:54:
+                    24:34:da:4c:4b:35:e2:c4:f1:71:e9:5a:7a:5b:76:
+                    3e:f3:57:9a:da:d9:0a:e8:64:55:51:f4:d9:58:8f:
+                    a7:31
+                Exponent: 65537 (0x10001)
+        X509v3 extensions:
+            X509v3 Basic Constraints: 
+                CA:FALSE
+            Netscape Comment: 
+                Easy-RSA Generated Certificate
+            X509v3 Subject Key Identifier: 
+                3C:5E:26:BE:41:AF:9D:6A:81:DA:B0:3F:DC:98:7B:DF:75:5E:16:C2
+            X509v3 Authority Key Identifier: 
+                keyid:E1:5C:19:F4:E6:BB:FB:21:F9:48:31:BB:35:FE:2D:DD:E6:BB:8F:02
+                DirName:/C=IT/ST=LT/L=Latina/O=TecnoQuadro/OU=osiGate/CN=TecnoQuadro CA/name=EasyRSA/emailAddress=service@tecnoquadro.com
+                serial:D2:7C:35:D8:97:16:15:93
+
+            X509v3 Extended Key Usage: 
+                TLS Web Client Authentication
+            X509v3 Key Usage: 
+                Digital Signature
+            X509v3 Subject Alternative Name: 
+                DNS:client
+    Signature Algorithm: sha256WithRSAEncryption
+         9e:ce:aa:11:50:b4:e6:ba:18:e6:b4:98:96:70:0d:8f:1d:37:
+         23:48:8d:82:7d:70:7f:2e:70:a8:6c:32:8d:1c:3a:fc:67:8c:
+         a0:d0:72:b6:5d:8b:64:45:6d:bb:e5:a3:33:5a:fc:58:ed:99:
+         ec:00:d2:09:15:fc:aa:78:c9:2c:a8:40:e2:c8:9f:1c:44:20:
+         81:b1:00:90:ef:ce:2f:20:cf:f0:82:84:21:f5:dd:04:1a:1d:
+         c7:24:8d:a7:ed:ce:b4:4d:15:0d:40:5b:39:c7:b3:da:26:cb:
+         a1:e1:29:3b:10:05:cf:f2:45:0b:0b:57:57:a5:29:50:b4:7b:
+         3d:4a:e2:62:cb:15:f8:fd:4b:23:c4:a8:42:40:2b:1d:d5:b5:
+         98:d5:b1:cb:71:f9:f9:de:dc:57:f9:4f:45:4f:34:4f:69:08:
+         f6:a7:db:76:36:72:bd:84:d5:e1:85:1d:b3:dd:c0:3b:83:7e:
+         29:ec:30:7d:8c:e3:03:b2:c0:99:3a:ff:a3:2b:66:a4:c7:58:
+         5e:17:50:33:a0:fb:4b:62:9f:70:78:10:8d:14:72:df:00:71:
+         69:29:34:26:b2:1b:79:d7:6b:8b:80:12:aa:58:ff:e6:df:02:
+         82:23:f4:a0:2b:ac:ff:d6:10:80:50:94:63:1f:05:2a:2e:7a:
+         21:1e:bf:85
+-----BEGIN CERTIFICATE-----
+MIIFMzCCBBugAwIBAgIBAjANBgkqhkiG9w0BAQsFADCBpjELMAkGA1UEBhMCSVQx
+CzAJBgNVBAgTAkxUMQ8wDQYDVQQHEwZMYXRpbmExFDASBgNVBAoTC1RlY25vUXVh
+ZHJvMRAwDgYDVQQLEwdvc2lHYXRlMRcwFQYDVQQDEw5UZWNub1F1YWRybyBDQTEQ
+MA4GA1UEKRMHRWFzeVJTQTEmMCQGCSqGSIb3DQEJARYXc2VydmljZUB0ZWNub3F1
+YWRyby5jb20wHhcNMTcwOTIxMDkwODU3WhcNMjcwOTE5MDkwODU3WjCBnjELMAkG
+A1UEBhMCSVQxCzAJBgNVBAgTAkxUMQ8wDQYDVQQHEwZMYXRpbmExFDASBgNVBAoT
+C1RlY25vUXVhZHJvMRAwDgYDVQQLEwdvc2lHYXRlMQ8wDQYDVQQDEwZjbGllbnQx
+EDAOBgNVBCkTB0Vhc3lSU0ExJjAkBgkqhkiG9w0BCQEWF3NlcnZpY2VAdGVjbm9x
+dWFkcm8uY29tMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA4QlL5CK6
+aoeDBNYkX1q2QDR7WOI1OBwELC/ccf/WKFeWVYE7+0Qy4Nst+rxXrzYORM1pqMkT
+A8xzyeokVW/N2fxiKoyiUy4CavvhgKrmJR3M1/Q6t6Ixn+IYPmZwQZ5AjeUURMbV
+WXjJ9RmsmugcJ7G7h++OqA6XfF3wz8A9Jazmb9dkLOJmnaGhg/64HVwAs8jA2Yef
+RmjaXOg5EiW2EovbJ385JkuH1Cyn+lUMqFMuTgwx2neqmri1JZ1HiCVwnesUSjaZ
+xdktKZDr3LWFElxREXJBw4EXfZF1IoJjeFQkNNpMSzXixPFx6Vp6W3Y+81ea2tkK
+6GRVUfTZWI+nMQIDAQABo4IBcDCCAWwwCQYDVR0TBAIwADAtBglghkgBhvhCAQ0E
+IBYeRWFzeS1SU0EgR2VuZXJhdGVkIENlcnRpZmljYXRlMB0GA1UdDgQWBBQ8Xia+
+Qa+daoHasD/cmHvfdV4WwjCB2wYDVR0jBIHTMIHQgBThXBn05rv7IflIMbs1/i3d
+5ruPAqGBrKSBqTCBpjELMAkGA1UEBhMCSVQxCzAJBgNVBAgTAkxUMQ8wDQYDVQQH
+EwZMYXRpbmExFDASBgNVBAoTC1RlY25vUXVhZHJvMRAwDgYDVQQLEwdvc2lHYXRl
+MRcwFQYDVQQDEw5UZWNub1F1YWRybyBDQTEQMA4GA1UEKRMHRWFzeVJTQTEmMCQG
+CSqGSIb3DQEJARYXc2VydmljZUB0ZWNub3F1YWRyby5jb22CCQDSfDXYlxYVkzAT
+BgNVHSUEDDAKBggrBgEFBQcDAjALBgNVHQ8EBAMCB4AwEQYDVR0RBAowCIIGY2xp
+ZW50MA0GCSqGSIb3DQEBCwUAA4IBAQCezqoRULTmuhjmtJiWcA2PHTcjSI2CfXB/
+LnCobDKNHDr8Z4yg0HK2XYtkRW275aMzWvxY7ZnsANIJFfyqeMksqEDiyJ8cRCCB
+sQCQ784vIM/wgoQh9d0EGh3HJI2n7c60TRUNQFs5x7PaJsuh4Sk7EAXP8kULC1dX
+pSlQtHs9SuJiyxX4/UsjxKhCQCsd1bWY1bHLcfn53txX+U9FTzRPaQj2p9t2NnK9
+hNXhhR2z3cA7g34p7DB9jOMDssCZOv+jK2akx1heF1AzoPtLYp9weBCNFHLfAHFp
+KTQmsht512uLgBKqWP/m3wKCI/SgK6z/1hCAUJRjHwUqLnohHr+F
+-----END CERTIFICATE-----

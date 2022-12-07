@@ -1,0 +1,115 @@
+#!/bin/bash
+
+dbuser="root"
+dbpass="root"
+dbdb="TECNOQ"
+dbtbdec="DEC_INPUT_TB"
+dbtbupl="UPL_INPUT_TB"
+dbtbslow="SLOW_UPLOADS"
+host=$(cat /srv/data/webhost)
+port=$(cat /srv/data/webhost_port)
+
+######## INT
+cmdcurl=$(which curl)
+cmdcurlopt="-s -X PUT --max-time 5"
+cmdmysql=$(which mysql)
+cmdmysqlopt="-s -N -u$dbuser -p$dbpass $dbdb"
+########
+
+if [[ $(grep -w run /srv/tmp/.002/upload.flg) ]]; then
+  exit
+else
+  echo "run" > /srv/tmp/.002/upload.flg
+fi
+
+query="SELECT * from $dbtbupl WHERE UPLOADED='n' ORDER BY ID DESC;"
+notUploadedList=$($cmdmysql $cmdmysqlopt -e "$query")
+
+### Insert application code
+appcode=$(cat /srv/data/application)
+#echo $appcode
+if [[ $appcode == 'I' ]]; then
+   notUploadedList=$(echo ${notUploadedList//s[A/s[IA})
+#   echo $notUploadedList
+   notUploadedList=$(echo ${notUploadedList//s[B/s[IB})
+#   echo $notUploadedList
+   notUploadedList=$(echo ${notUploadedList//s[C/s[IC})
+#   echo $notUploadedList
+   notUploadedList=$(echo ${notUploadedList//s[D/s[ID})
+#   echo $notUploadedList
+fi
+
+measureStart=$(date +"%s")
+cnt=0
+upl=0
+D=""
+
+for field in $notUploadedList ; do
+  if [[ ! $field == "n" ]]; then
+    MY[$cnt]=$field
+    #Dynamic Value
+    if [[ $field =~ ^s\[.*\]=.* ]]; then
+      D="$D -d $field"
+    fi
+    let cnt="$cnt +1"
+  else
+    numField=$cnt
+    ROW=${MY[0]}
+    CID=${MY[1]}
+    let slot="$numField -3"
+    RC="-d "${MY[$slot]}
+    let slot="$numField -2"
+    TS="-d "${MY[$slot]}
+    let rest="$numField -5"
+
+    #Try to upload
+    #webhost="$host/api/nodes/$CID/add.json"
+    #webhost="$host:$port/api/nodes/$CID/add.json"
+
+    webhost=$(echo $host | sed -e "s/\//:$port\//3")api/nodes/$CID/add.json
+    #echo $webhost >> /var/log/uplConvData.log
+    result=$($cmdcurl $cmdcurlopt $D $RC $TS $webhost)
+    #echo >> /var/log/uplConvData.log
+    #echo "Uploading to $webhost on $(date)" >> /var/log/uplConvData.log
+    echo $CID $D $RC $TS  >> /var/log/uplConvData.log
+    #echo $result >> /var/log/uplConvData.log
+
+    if [[ $result =~ \{\"result\":true\} ]]; then
+
+# ------------------
+       if [[ -f /srv/data/webhost2  ]]; then
+          host2=$(cat /srv/data/webhost2)
+          port2=$(cat /srv/data/webhost2_port)
+          webhost2=$(echo $host2 | sed -e "s/\//:$port2\//3")api/nodes/$CID/add.json
+#          echo $webhost2 >> /var/log/uplConvData.log
+          result2=$($cmdcurl $cmdcurlopt $D $RC $TS $webhost2)
+#          echo "Uploading to additional server on $(date)" >> /var/log/uplConvData.log
+#          echo $result2 >> /var/log/uplConvData.log
+#       else
+#          echo "Uploading to additional server on $(date) not required" >> /var/log/uplConvData.log
+       fi
+# ------------------
+
+       UPLTS=$(date +"%d/%m/%Y %H:%M:%S")
+       query="UPDATE $dbtbupl set UPLOADED='y', UTIME='$UPLTS' WHERE ID='$ROW' ;"
+       $cmdmysql $cmdmysqlopt -e "$query"
+    fi
+
+    #gogogogo
+    cnt=0
+    D=""
+    let upl="$upl +1"
+  fi
+done
+
+measureEnd=$(date +"%s")
+measureElapsed=$((measureEnd - measureStart))
+
+if [[ $measureElapsed -gt 60 ]]; then
+  query="INSERT INTO $dbtbslow (QUANTITY,START,END,ELAPSED) VALUES ('$upl','$measureStart','$measureEnd','$measureElapsed');"
+  $cmdmysql $cmdmysqlopt -e "$query"
+fi
+
+echo "stop" > /srv/tmp/.002/upload.flg
+exit
+

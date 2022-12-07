@@ -1,0 +1,562 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+
+    font-family: 'Noto Sans', sans-serif;
+    overflow-wrap: break-word;
+
+    text-align: center;
+}
+
+:root {
+
+    --WHITE: #ffffff;
+    --RED: #ff0000;
+    --GREEN: #00ff00;
+    --BLUE: #0000ff;
+    
+    --PAGE-TOP: rgb(235, 235, 235);
+    --PAGE-BOTTOM: rgb(194, 194, 194);
+    
+    --GREEN-SAVE: #00e60b;
+    --BLUE-RESET: rgb(3, 142, 235);
+    --RED-DELETE: #ff0000;
+    --GREY-DISABLED: #a8a8a8;
+
+}
+
+html {
+    background: linear-gradient(to bottom, var(--PAGE-TOP), var(--PAGE-BOTTOM));
+    min-height: 100vh;
+    
+    font-size: 23px;
+}
+
+h1 {
+    max-width: 90%;
+    margin-top: 30px;
+
+    color: red;
+}
+
+input {
+    font-size: 0.9em;
+}
+
+input[type="text"] {
+    padding: 1px 2px;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    appearance: none;
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number] {
+    appearance: textfield;
+    -moz-appearance: textfield;
+}
+
+input::placeholder {
+    opacity: .7; 
+}
+
+input::-webkit-input-placeholder {
+    opacity: 0.7;
+}
+
+button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.none {
+    display: none;
+}
+
+.cursor {
+    cursor: pointer;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.flex-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.confirm-button {
+    padding: 6px; 
+
+    border: none;
+    border-radius: 100px;
+
+    color: white;
+    font-weight: bold;
+}
+
+#login {
+    width: 80%;
+    margin-top: 30px;
+    padding: 30px 2.5%; 
+
+    border-radius: 20px;
+
+    background-color: white;
+}
+
+#login > b {
+    font-size: 1.5em;
+    margin-bottom: 25px;
+}
+
+#login-form {
+    justify-content: space-around;
+}
+
+#login-form > div {
+    display: flex;
+}
+
+#login-form > div > div:not(:last-child), #login-form > div > div > *:not(:last-child) {
+    margin-right: 20px;
+}
+
+#login-form input[type=text], #login-form input[type=password] {
+    width: 250px;
+}
+
+#login-form input[type=submit] {
+    width: 200px;
+    margin-top: 25px;
+
+    background-color: red;
+} 
+
+#login #error-login {
+    margin-top: 25px;
+}
+
+.rules-title {
+    margin: 36px 0 !important;
+}
+
+.osirele:not(:first-child).osirele:not(:nth-child(2)) {
+    margin-top: 64px;
+}
+
+.osirele-title-div {
+    margin-bottom: 0 !important;
+}
+
+.osirele-title {
+    font-weight: bold;
+    font-size: 1.75em;
+
+    color: red;
+}
+
+.reles {
+    width: 80%;
+    padding: 40px 2.5%; 
+    margin-bottom: 60px;
+
+    border-radius: 20px;
+
+    background-color: white;
+}
+
+.rele, .osirele-title-div {
+    width: 96%;
+    padding: 15px 2%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+
+    margin-bottom: 21px;
+}
+
+.rele:not(:first-child).rele:not(:nth-child(2)) {
+    margin-top: 21px;
+}
+
+.rele h2 {
+    text-transform: uppercase;
+}
+
+.update-rules {
+    width: 250px;
+
+    background-color: var(--RED);
+
+    font-size: 1em;
+    word-break: break-all;
+}
+
+.rele-title img {
+    width: 27px;
+
+    margin-left: 27px;
+}
+
+.rule-info {
+    display: flex;
+    align-items: center;
+
+    margin-top: 18px;
+}
+
+.rule-main {
+    margin-left: 18px;
+    font-size: 1.25em;
+}
+
+.rule-delay {
+    margin-left: 36px;
+    font-size: 1.1em;
+}
+
+.rule-time {
+    margin-left: 18px;
+    font-size: 1.1em;
+}
+
+.sensor-input { /* Easter Egg from "Old" Version that lasted less than 1 Day */
+    width: 210px;
+    margin: 0 15px;
+}
+
+.select-comparison {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    text-indent: 0px;
+    text-overflow: '';
+
+    padding: 5px 10px;
+    font-size: .9em;
+
+    margin-left: 15px;
+}
+
+.osinode-port-separator, .unit {
+    margin-left: 15px;
+}
+
+.sensor-value {
+    width: 150px;
+    margin-left: 15px;
+}
+
+.duration-value, .delay-value {
+    width: 90px;
+    margin: 0 15px;
+}
+
+.time-selection {
+    width: 125px;
+    margin: 0 15px;
+}
+
+.user-select {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+
+.user-select span {
+    margin-right: 20px;
+
+    font-size: 1.1em;
+    font-weight: bold;
+}
+
+.user-select input[type=text] {
+    width: 360px;
+}
+
+.user-select.no-user-selected {
+    margin-bottom: 0px !important;
+}
+
+button.enter {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    margin: auto 0;
+    margin-left: 10px;
+    background-color: red;
+}
+
+button.enter img {
+    width: 27px;
+    height: 27px;
+}
+
+.add-osirele-div {
+    flex-direction: row !important;
+    justify-content: flex-start;
+    align-items: center;
+
+    font-weight: bold;
+    font-size: 1.25em;
+}
+
+.add-osirele-div span {
+    text-transform: uppercase;
+}
+
+.add-osirele-div img {
+    width: 39px;
+    margin-left: 16px;
+}
+
+.main-error {
+    margin: 0 !important;
+
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    font-size: 1.1em;
+}
+
+@media (max-width: 1000px) {
+
+    #login > b {
+        padding: 0 10px;
+    }
+
+    #login-form > div {
+        flex-direction: column;
+    }
+
+    #login-form > div label {
+        width: 115px;
+    }
+
+    #login-form > div > div:not(:last-child) {
+        margin-right: 0;
+        margin-bottom: 21px;
+    }
+
+    .rele:last-of-type:not(.add-osirele-div) {
+        margin-bottom: 0 !important;
+    }
+
+    .inline-rule-info {
+        display: inline-block;
+        margin: 0 8px;
+        margin-top: 18px;
+        
+        text-align: justify;
+    }
+
+    .inline-rule-info .rule-info {
+        display: inline;
+        margin-left: 0 !important;
+
+        line-height: 42px;
+
+        font-size: 1em !important; 
+        text-align: justify;
+    }
+
+    .rule-info > * {
+        margin: 0 !important;
+    } 
+
+    .rele select {
+        padding: 3px 6px;    
+    }
+
+    .rele input {
+        padding: 1px 0; 
+    }
+
+    .sensor-value {
+        width: 100px;
+    }
+
+    .duration-value, .delay-value {
+        width: 60px;
+    }
+
+    .time-selection {
+        width: 100px;
+    }
+
+}
+
+@media (max-width: 725px) {
+
+    #login {
+        width: 87.5%;
+    }
+
+    .reles {
+        width: 87.5%;
+        padding: 20px 2.5%;
+    }
+
+    .reles:not(.no-user-selected) {
+        padding-bottom: 36px;
+    }
+
+    .user-select {
+        flex-direction: column;
+    }
+
+    .user-select:not(.no-user-selected) {
+        width: 95%;
+        padding: 15px 2.5%;
+    }
+
+    .user-select span {
+        margin-right: 0;
+        margin-bottom: 16px;
+    }
+
+}
+
+@media (max-width: 600px) {
+
+    html {
+        font-size: 19px;
+    }
+
+    input {
+        font-size: 0.95em;
+    }
+
+    select {
+        font-size: 1em;
+    }
+
+    .osirele:not(:first-child).osirele:not(:nth-child(2)) {
+        margin-top: 42px;
+    }
+
+    .rele {
+        margin-bottom: 9px;
+    }
+
+    .rele:not(:first-child).rele:not(:nth-child(2)) {
+        margin-top: 9px;
+    }
+
+    .time-selection {
+        width: 90px !important;
+    }
+
+    .rele-title img {
+        width: 24px;
+
+        margin-left: 24px;
+    }
+
+    .add-osirele-div {
+        display: inline-flex;
+        justify-content: center;
+    }
+
+    .add-osirele-div img {
+        width: 32px;
+        margin-left: 16px;
+    }
+
+}
+
+@media (max-width: 500px) {
+
+    #login-form > div > div {
+        flex-direction: column;
+    }
+
+    #login-form > div > div > *:not(:last-child) {
+        margin-right: 0;
+        margin-bottom: 8px;
+    }
+
+    #login-form > div label {
+        width: unset;
+    }
+
+    #login-form > div > div:not(:last-child) {
+        margin-right: 0;
+        margin-bottom: 16px;
+    }
+
+    .user-select div {
+        width: 100%;
+
+        flex-direction: column;
+    }
+
+    .user-select input {
+        width: 95% !important;
+    }
+
+    .enter {
+        width: 30px !important;
+        height: 30px !important;
+
+        margin-top: 16px !important;
+        margin-left: 0px !important;
+    }
+
+    button.enter img {
+        width: 21px !important;
+        height: 21px !important;
+    }
+
+}
+
+@media (max-width: 350px) {
+
+    #login-form input[type=text], #login-form input[type=password], #login-form input[type=submit] {
+        width: 90%;
+    }
+
+    .user-select {
+        padding: 0 2.5%;
+    }
+
+    .main-error {
+        padding: 0 !important;
+        padding-top: 15px !important;
+
+        font-size: 0.8em;
+    }
+
+    .rules-title {
+        margin: 27px 0 !important;
+    }
+
+    .update-rules {
+        width: 90%;
+        
+        font-size: .95em;
+    }
+
+}

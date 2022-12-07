@@ -1,0 +1,5 @@
+curl -s -X PUT --max-time 5 -d s[A5]=0 -d s[A6]=0 -d r=1 -d t=160000 http://s.tecnoquadro.com/api/nodes/R00007/add.json
+
+con HTTPS (test OLIVETTI 28-06-2018):
+curl -s -k -X PUT --max-time 5 -d s[D25]=146 -d s[C16]=474 -d r=12345 -d t=16789023  https://217.59.12.154:443/api/nodes/aBc138/add.json
+{"result":false}

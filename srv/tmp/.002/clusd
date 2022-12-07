@@ -1,0 +1,113 @@
+#!/bin/bash
+
+myPath=/srv/cluster
+myConf="$myPath/clus.cnf"
+myLogs="$myPath/clus.log"
+myBlis="$myPath/blis"
+myStat="$myPath/status"
+cmdping=$(which ping)
+cmdps=$(which ps)
+myConf (){
+rEnab=$(egrep ^0x01: $myConf |cut -d= -f2)
+rRole=$(egrep ^0x02: $myConf |cut -d= -f2)
+rMode=$(egrep ^0x03: $myConf |cut -d= -f2)
+rDead=$(egrep ^0x04: $myConf |cut -d= -f2)
+rComp=$(egrep ^0x05: $myConf |cut -d= -f2)
+rReso=$(egrep ^0x09: $myConf |cut -d= -f2)
+}
+myReso (){
+  cmd=$1
+  for r in $rReso; do
+    what=$(echo $r |cut -d';' -f1)
+
+    case $cmd in
+    stop)  getP=$($cmdps -ef|grep -v grep|grep $what |awk '{print $2}')
+           if [[ $getP ]]; then
+             kill -9 $getP 2>&1 >/dev/null
+             echo $what >> $myBlis
+           fi
+      ;;
+    start)
+           getP=$($cmdps -ef|grep -v grep|grep $what |awk '{print $2}')
+           if [[ ! $getP ]]; then
+             sed -i "s/$what//g" $myBlis
+           fi
+      ;;
+    esac
+  done
+}
+writeLogs(){
+  msg=$1
+  echo -e "$(date) $msg" >> $myLogs
+}
+sendStat (){
+  msg=$1
+  echo $msg > $myStat 
+}
+chkEnab (){
+  if [[ $rEnab == "no" ]]; then
+    #writeLogs "Cluster daemon is not enabled by admin"
+    myReso start
+    sendStat "disabled"
+    exit
+  fi
+}
+chkComp (){
+  chkStatus=$($cmdping -c3 -w1 $rComp |grep loss|awk '{print $6}' |sed s/%//)  
+  
+  if [[ $chkStatus -lt 70 ]]; then
+    comp=alive
+  else
+    comp=dead
+    writeLogs "Comp $rComp appears to be dead, waiting deadline of $rDead before any actions"
+  fi
+
+  if [[ $comp == "dead" ]]; then
+    sleep $rDead
+    chkStatus=$($cmdping -c3 -w1 $rComp |grep loss|awk '{print $6}' |sed s/%//)
+    if [[ $chkStatus -lt 70 ]]; then
+      comp=alive
+    else
+      comp=dead
+    fi
+  fi
+}
+chkRole (){
+  case $rRole in
+    master) #If Slave dead - start appl - send alarm
+      if [[ $comp == "dead" ]]; then
+        myReso start
+        writeLogs "Clus KO - Slave unreach"
+        #REMEMBER PROACTIVITY
+      else
+        myReso start
+      fi
+      #REMEMBER PROACTIVITY
+      #hwreset
+    ;;
+    slave)  #If Master dead - change role - start appl - send alarm
+      if [[ $comp == "dead" ]]; then
+        myReso start
+        sed -i "s/0x02:role=slave/0x02:role=master/" $myConf
+        writeLogs "Clus KO - Master unreach"
+      else
+        myReso stop
+      fi
+    ;;
+  esac
+}
+chkStat (){
+  if [[ $comp == "dead" ]]; then
+    sendStat "$comp"
+  elif [[ $comp == "alive" ]]; then
+    sendStat "$comp"
+  fi
+}
+while true; do
+  myConf
+  chkEnab
+  chkComp
+  chkRole
+  chkStat
+  sleep 10
+done
