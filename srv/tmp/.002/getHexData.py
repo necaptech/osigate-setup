@@ -26,8 +26,6 @@ def read_serial(ser):
                     x.execute('''INSERT into OSIRE_STATUS (status) values (%s)''',[inp.hex()])
                 else:
                     print ("Message %d from OsiNODE" % c)
-                    print (inp)
-                    print ('''INSERT into HEX_INPUT_TB (HEXSTR) values (%s)''',[inp.hex()])
                     x.execute('''INSERT into HEX_INPUT_TB (HEXSTR) values (%s)''',[inp.hex()])
                 conn.commit()
         except Exception as e:
