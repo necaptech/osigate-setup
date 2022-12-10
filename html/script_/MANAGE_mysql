@@ -3,7 +3,7 @@
 command=$1
 
 if [[ ! $command ]]; then
-myStatus=$(/usr/bin/sudo /etc/init.d/mysql status|egrep running)
+myStatus=$(/usr/bin/sudo service mysql status|egrep running)
 
 #echo $myStatus >> /var/www/html/logs_/log.txt
   if [[ $myStatus ]]; then
