@@ -20,12 +20,12 @@ def read_serial(ser):
             inp = ser.read(size=71) 
             if inp:
                 c+=1
-                print (" [*] inp = %s" % inp)
+                # print (" [*] inp = %s" % inp)
                 if inp[0] == 'R':
-                    print ("Message %d from OsiRELE" % c)
+                    # print ("Message %d from OsiRELE" % c)
                     x.execute('''INSERT into OSIRE_STATUS (status) values (%s)''',[inp.hex()])
                 else:
-                    print ("Message %d from OsiNODE" % c)
+                    # print ("Message %d from OsiNODE" % c)
                     x.execute('''INSERT into HEX_INPUT_TB (HEXSTR) values (%s)''',[inp.hex()])
                 conn.commit()
         except Exception as e:
@@ -45,7 +45,7 @@ ser = serial.Serial(
     timeout=0.05
 )
 
-print(">>> Receiving messages on radio interface from port %s ..." % s_port)
+# print(">>> Receiving messages on radio interface from port %s ..." % s_port)
 
 while True:
     rx = read_serial(ser)
