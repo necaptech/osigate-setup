@@ -10,7 +10,6 @@ optcurl="--connect-timeout 5 --max-time 10"
 sysName=$(cat /srv/data/sysname)
 vpnMgt="/etc/init.d/openvpn"
 
-sleep $[ ($RANDOM % 100 ) ]
 tunnelStatus=$($cmdping -w3 $srvIp | grep loss | awk '{print$6}')
 
 if [[ $tunnelStatus == 100% ]]; then
