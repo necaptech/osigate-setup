@@ -9,7 +9,7 @@ ProcName2="uplConvData"
 echo "$(date)MANAGE System change Issued $command with value $value1" >> /var/www/html/logs_/log.txt
 
 case $command in
-  gwshow) myStatus=$(/bin/ps -ef|grep -v grep|grep $ProcName1|wc -l)
+  gwshow) myStatus=$(/bin/ps -ef|grep $ProcName1|wc -l)
         if [[ $myStatus -gt 0 ]]; then
           echo -e "<pre><font color='green'>Gateway is UP</font></pre>"
         else
