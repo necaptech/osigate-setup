@@ -20,13 +20,19 @@ def read_serial(ser):
             inp = ser.read(size=71) 
             if inp:
                 c+=1
+
+                # f = open("/srv/tmp/.002/getLoggg.log", "a")
+                # f.write("%s\n%s\n\n" % (inp, inp.hex()))
+                # f.close()
+
                 # print (" [*] inp = %s" % inp)
-                if inp[0] == 'R':
-                    # print ("Message %d from OsiRELE" % c)
-                    x.execute('''INSERT into OSIRE_STATUS (status) values (%s)''',[inp.hex()])
-                else:
-                    # print ("Message %d from OsiNODE" % c)
-                    x.execute('''INSERT into HEX_INPUT_TB (HEXSTR) values (%s)''',[inp.hex()])
+                # if str((inp.hex())[0:2]) == '52':
+                    # # print ("Message %d from OsiRELE" % c)
+                    # x.execute('''INSERT into OSIRE_STATUS (status) values (%s)''',[inp.hex()])
+                # else:
+                    # # print ("Message %d from OsiNODE" % c)
+                
+                x.execute('''INSERT into HEX_INPUT_TB (HEXSTR) values (%s)''',[inp.hex()])
                 conn.commit()
         except Exception as e:
             f = open("/var/log/getHexData.log", "a")
@@ -42,7 +48,7 @@ def read_serial(ser):
 ser = serial.Serial(
     port=s_port,
     baudrate=b_rate,
-    timeout=0.05
+    timeout=3
 )
 
 # print(">>> Receiving messages on radio interface from port %s ..." % s_port)
