@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Start Conv Data
+bash /srv/tmp/.002/uplConvData
