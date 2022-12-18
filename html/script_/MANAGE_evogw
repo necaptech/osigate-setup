@@ -3,7 +3,7 @@
 command=$1
 value1=$2
 ProcName1="[g]etHexData.py"
-ProcName2="uplConvData"
+ProcName2="[u]plConvData"
 
 
 echo "$(date)MANAGE System change Issued $command with value $value1" >> /var/www/html/logs_/log.txt
@@ -16,7 +16,7 @@ case $command in
           echo -e "<pre><font color='red'>Gateway is DOWN</font></pre>"
         fi
   ;;
-  upshow) myStatus=$(/bin/ps -ef|grep -v grep|grep $ProcName2|wc -l)
+  upshow) myStatus=$(/bin/ps -ef|grep $ProcName2|wc -l)
         if [[ $myStatus -gt 0 ]]; then
           echo -e "<pre><font color='green'>Upload is running..</font></pre>"
         else
