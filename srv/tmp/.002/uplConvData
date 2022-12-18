@@ -17,13 +17,11 @@ cmdmysql=$(which mysql)
 cmdmysqlopt="-s -N -u$dbuser -p$dbpass $dbdb"
 ########
 
-if [[ $(grep -w stop /srv/tmp/.002/upload.flg) ]]; then
+if [[ $(grep -w run /srv/tmp/.002/upload.flg) ]]; then
   exit
 else
   echo "run" > /srv/tmp/.002/upload.flg
 fi
-
-echo $cmdmysqlopt; exit
 
 query="SELECT * from $dbtbupl WHERE UPLOADED='n' ORDER BY ID DESC;"
 notUploadedList=$($cmdmysql $cmdmysqlopt -e "$query")
@@ -48,6 +46,7 @@ upl=0
 D=""
 
 for field in $notUploadedList ; do
+  
   if [[ ! $field == "n" ]]; then
     MY[$cnt]=$field
     #Dynamic Value
@@ -55,6 +54,7 @@ for field in $notUploadedList ; do
       D="$D -d $field"
     fi
     let cnt="$cnt +1"
+
   else
     numField=$cnt
     ROW=${MY[0]}
@@ -72,38 +72,40 @@ for field in $notUploadedList ; do
     webhost=$(echo $host | sed -e "s/\//:$port\//3")api/nodes/$CID/add.json
     #echo $webhost >> /var/log/uplConvData.log
     result=$($cmdcurl $cmdcurlopt $D $RC $TS $webhost | head -n1)
+
     #echo >> /var/log/uplConvData.log
     #echo "Uploading to $webhost on $(date)" >> /var/log/uplConvData.log
     #echo $CID $D $RC $TS  >> /var/log/uplConvData.log
     #echo $result >> /var/log/uplConvData.log
 
-#    if [[ $result =~ \{\"result\":true\} ]]; then
+    # if [[ $result =~ \{\"result\":true\} ]]; then
     if [[ $result =~ "200 OK" ]]; then
-       #echo "Value uploaded" >> /var/log/uplConvData.log
+       # echo "Value uploaded" >> /var/log/uplConvData.log
 
-# ------------------
-       if [[ -f /srv/data/webhost2  ]]; then
-          host2=$(cat /srv/data/webhost2)
-          port2=$(cat /srv/data/webhost2_port)
-          webhost2=$(echo $host2 | sed -e "s/\//:$port2\//3")api/nodes/$CID/add.json
-#          echo $webhost2 >> /var/log/uplConvData.log
-          result2=$($cmdcurl $cmdcurlopt $D $RC $TS $webhost2)
-#          echo "Uploading to additional server on $(date)" >> /var/log/uplConvData.log
-#          echo $result2 >> /var/log/uplConvData.log
-#       else
-#          echo "Uploading to additional server on $(date) not required" >> /var/log/uplConvData.log
-       fi
-# ------------------
+      # ------------------
+      if [[ -f /srv/data/webhost2  ]]; then
+        host2=$(cat /srv/data/webhost2)
+        port2=$(cat /srv/data/webhost2_port)
+        webhost2=$(echo $host2 | sed -e "s/\//:$port2\//3")api/nodes/$CID/add.json
+        # echo $webhost2 >> /var/log/uplConvData.log
+        result2=$($cmdcurl $cmdcurlopt $D $RC $TS $webhost2)
+        # echo "Uploading to additional server on $(date)" >> /var/log/uplConvData.log
+        # echo $result2 >> /var/log/uplConvData.log
+      # else
+        # echo "Uploading to additional server on $(date) not required" >> /var/log/uplConvData.log
+      fi
+      # ------------------
 
-       UPLTS=$(date +"%d/%m/%Y %H:%M:%S")
-       query="UPDATE $dbtbupl set UPLOADED='y', UTIME='$UPLTS' WHERE ID='$ROW' ;"
-       $cmdmysql $cmdmysqlopt -e "$query"
+      UPLTS=$(date +"%d/%m/%Y %H:%M:%S")
+      query="UPDATE $dbtbupl set UPLOADED='y', UTIME='$UPLTS' WHERE ID='$ROW' ;"
+      $cmdmysql $cmdmysqlopt -e "$query"
+    
     elif [[ $result =~ "404 Not Found" ]]; then
-       UPLTS=$(date +"%d/%m/%Y %H:%M:%S")
-       query="UPDATE $dbtbupl set UPLOADED='x', UTIME='$UPLTS' WHERE ID='$ROW' ;"
-#       query="UPDATE $dbtbupl set UPLOADED='y', UTIME='01/01/2000 00:00:01' WHERE ID='$ROW' ;"
-       $cmdmysql $cmdmysqlopt -e "$query"
-       #echo "Value NOT uploaded\n" >> /var/log/uplConvData.log
+      UPLTS=$(date +"%d/%m/%Y %H:%M:%S")
+      query="UPDATE $dbtbupl set UPLOADED='x', UTIME='$UPLTS' WHERE ID='$ROW' ;"
+      # query="UPDATE $dbtbupl set UPLOADED='y', UTIME='01/01/2000 00:00:01' WHERE ID='$ROW' ;"
+      $cmdmysql $cmdmysqlopt -e "$query"
+      #echo "Value NOT uploaded\n" >> /var/log/uplConvData.log
     fi
 
     #gogogogo
