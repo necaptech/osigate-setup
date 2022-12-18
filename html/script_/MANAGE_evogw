@@ -2,7 +2,7 @@
 
 command=$1
 value1=$2
-ProcName1="getHexData.py"
+ProcName1="[g]etHexData.py"
 ProcName2="uplConvData"
 
 
@@ -23,9 +23,9 @@ case $command in
           echo -e "<pre><font color='red'>Upload is not running..</font></pre>"
         fi
   ;;
-  gwstop) pids=$(/bin/ps -ef|grep -v grep|grep $ProcName1|awk '{print $2}')
+  gwstop) pids=$(/bin/ps -ef|grep $ProcName1|awk '{print $2}')
         if [[ $pids ]];then
-          /usr/bin/sudo /bin/kill $pids
+          /bin/kill $pids
         fi
   ;;
 
