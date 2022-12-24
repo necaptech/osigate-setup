@@ -274,6 +274,7 @@ if (file_exists("/srv/data/sysname")) {
                 <?php endforeach; ?>
                 <div class="add-osirele-div rele flex">
                     <span>Aggiungi OsiRELE</span>
+                    <input name="newReleName" type=text placeholder="R00001">
                     <button name="Aggiungi" class="cursor">
                         <img src="/css_/add.png" />
                     </button>
