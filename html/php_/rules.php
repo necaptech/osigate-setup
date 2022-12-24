@@ -54,6 +54,9 @@
         print_r($OSIRELES_NAMES);
 
         // Select New OsiRELE Name
+        $newName = $_POST['newReleName'];
+
+        /*
         if (empty($OSIRELES_NAMES)) {
             $newName = DEFAULT_OSIRELE;
         } else {
@@ -62,19 +65,24 @@
             $newNum = $lastNum + 1;
             $newName = "RE" . str_pad($newNum, 4, '0', STR_PAD_LEFT);
         }
+        */
 
-        // Build New OsiRELE Names List
-        $namesList = "";
-        foreach ($OSIRELES_NAMES as $OsiRELE_Name) {
+        if (!in_array($newName, $OSIRELES_NAMES)) {
+
+            // Build New OsiRELE Names List
+            $namesList = "";
+            foreach ($OSIRELES_NAMES as $OsiRELE_Name) {
+                if ($namesList) $namesList .= "\n";
+                $namesList .= $OsiRELE_Name;
+            }
+
             if ($namesList) $namesList .= "\n";
-            $namesList .= $OsiRELE_Name;
+            $namesList .= $newName;
+
+            // Apply Changes
+            shell_exec("echo \"" . $namesList . "\" > " . RULES_DIR . "osiRele");
+        
         }
-
-        if ($namesList) $namesList .= "\n";
-        $namesList .= $newName;
-
-        // Apply Changes
-        shell_exec("echo \"" . $namesList . "\" > " . RULES_DIR . "osiRele");
 
         header('Location: /');
         exit();        
@@ -223,12 +231,6 @@
             if ($OsiRELE_Name) {
                 $OSIRELES_NAMES[] = rtrim($OsiRELE_Name);
             }
-        }
-
-        // Create OsiRELE if NULL
-        if ($OSIRELES_NAMES == null) {
-            shell_exec("echo \"RE0001\" > " . RULES_DIR . "osiRele");
-            $OSIRELES_NAMES = [DEFAULT_OSIRELE];
         }
 
         // Get User Data
