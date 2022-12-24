@@ -319,16 +319,22 @@ button.enter img {
     align-items: center;
 
     font-weight: bold;
-    font-size: 1.25em;
 }
 
 .add-osirele-div span {
     text-transform: uppercase;
+    font-size: 1.2em;
 }
 
 .add-osirele-div img {
     width: 39px;
     margin-left: 16px;
+}
+
+.add-osirele-div input[type=text] {
+    width: 125px;
+    margin-left: 16px;
+    font-size: 1.1em;
 }
 
 .main-error {
@@ -528,6 +534,21 @@ button.enter img {
     button.enter img {
         width: 21px !important;
         height: 21px !important;
+    }
+
+    .add-osirele-div {
+        flex-direction: column !important;
+    }
+
+    .add-osirele-div img {
+        margin-top: 16px;
+        margin-left: 0;
+    }
+
+    .add-osirele-div input[type=text] {
+        width: 70vw;
+        margin-top: 16px;
+        margin-left: 0;
     }
 
 }
