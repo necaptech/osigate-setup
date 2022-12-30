@@ -24,22 +24,24 @@
                                                    <th>Switch No 7</th><th>Switch No 8</th>
                                                    <th>Last seen</th></tr></thead><tbody>";
             while (($id=fgets($file)) != false) {
+                $id = trim($id);
                 $idHex='';
                 for ($i=0; $i<6; $i++){
                     $idHex .= dechex(ord($id[$i]));
                 }
 //                    $contrStatus = mysqli_query($connDB, "SELECT status, time FROM OSIRE_STATUS WHERE status LIKE '%" . trim($id) . "%'"
-                $contrStatus = mysqli_query($connDB, "SELECT status, time FROM OSIRE_STATUS WHERE status LIKE '%" . $idHex . "%'"
-                                                   . " ORDER BY time DESC LIMIT 1" );
+                // echo "SELECT `Status`, Unix FROM OSIRE_STATUS WHERE ReleID = '" . $id . "'" . " ORDER BY Unix DESC LIMIT 1" ;
+                $contrStatus = mysqli_query($connDB, "SELECT `Status`, Unix FROM OSIRE_STATUS WHERE ReleID = '" . $id . "'" . " ORDER BY Unix DESC LIMIT 1" );
                 $riga = mysqli_fetch_array($contrStatus);
-                echo "<tr><td>" . $id . "</td><td>" . substr($riga[0], 16, 2) . "</td><td>" .
-                                                      substr($riga[0], 22, 2) . "</td><td>" .
-                                                      substr($riga[0], 28, 2) . "</td><td>" .
-                                                      substr($riga[0], 34, 2) . "</td><td>" .
-                                                      substr($riga[0], 40, 2) . "</td><td>" .
-                                                      substr($riga[0], 46, 2) . "</td><td>" .
-                                                      substr($riga[0], 52, 2) . "</td><td>" .
-                                                      substr($riga[0], 58, 2) . "</td><td>" .
+                // print_r($riga);
+                echo "<tr><td>" . $id . "</td><td>" . substr($riga[0], 0, 2) . "</td><td>" .
+                                                      substr($riga[0], 2, 2) . "</td><td>" .
+                                                      substr($riga[0], 4, 2) . "</td><td>" .
+                                                      substr($riga[0], 6, 2) . "</td><td>" .
+                                                      substr($riga[0], 8, 2) . "</td><td>" .
+                                                      substr($riga[0], 10, 2) . "</td><td>" .
+                                                      substr($riga[0], 12, 2) . "</td><td>" .
+                                                      substr($riga[0], 14, 2) . "</td><td>" .
                                                       $riga[1] . "</td></tr>";
                 mysqli_free_result($contrStatus);
             }
