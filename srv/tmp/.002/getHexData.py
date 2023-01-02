@@ -10,7 +10,7 @@ conn = MySQLdb.connect(host= "localhost",
 x = conn.cursor()
 s_port = '/dev/ttyS0'
 # s_port = '/dev/ttyUSB0'
-b_rate = 1800
+b_rate = 1200
 
 def read_serial(ser):
     
@@ -20,9 +20,9 @@ def read_serial(ser):
             inp = ser.read(size=70) 
             if inp:
 
-                f = open("/srv/tmp/.002/getLoggg.log", "a")
-                f.write("%s\n%s\n\n" % (inp, inp.hex()))
-                f.close()
+                # f = open("/srv/tmp/.002/getLoggg.log", "a")
+                # f.write("%s\n%s\n\n" % (inp, inp.hex()))
+                # f.close()
                 
                 x.execute('''INSERT into HEX_INPUT_TB (HEXSTR) values (%s)''',[inp.hex()])
                 conn.commit()
@@ -32,7 +32,7 @@ def read_serial(ser):
                 if releUpdates:
                     for releUpdate in releUpdates:
                         byteUpd = bytes.fromhex(releUpdate)
-                        # ser.write(byteUpd)
+                        ser.write(byteUpd)
             
                     with open('/srv/tmp/relUpdate.txt', "w") as resetReleUpdatesFile:
                         resetReleUpdatesFile.write("")
@@ -54,7 +54,7 @@ def read_serial(ser):
 ser = serial.Serial(
     port=s_port,
     baudrate=b_rate,
-    timeout=2.5
+    timeout=3
 )
 
 # print(">>> Receiving messages on radio interface from port %s ..." % s_port)
