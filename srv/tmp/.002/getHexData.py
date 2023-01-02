@@ -12,33 +12,39 @@ s_port = '/dev/ttyS0'
 #s_port = '/dev/ttyUSB0'
 b_rate = 1200
 
+dbtbrel = "OSIRE_STATUS"
+
 def read_serial(ser):
-    c = 0
+    
     while True:
         inp=''
         try:
             inp = ser.read(size=71) 
             if inp:
-                c+=1
 
                 # f = open("/srv/tmp/.002/getLoggg.log", "a")
                 # f.write("%s\n%s\n\n" % (inp, inp.hex()))
                 # f.close()
-
-                # print (" [*] inp = %s" % inp)
-                # if str((inp.hex())[0:2]) == '52':
-                    # # print ("Message %d from OsiRELE" % c)
-                    # x.execute('''INSERT into OSIRE_STATUS (status) values (%s)''',[inp.hex()])
-                # else:
-                    # # print ("Message %d from OsiNODE" % c)
                 
                 x.execute('''INSERT into HEX_INPUT_TB (HEXSTR) values (%s)''',[inp.hex()])
                 conn.commit()
+            
+            with open('/srv/tmp/relUpdate.txt', "r") as releUpdatesFile:
+                releUpdates = [x.replace("\n", "") for x in releUpdatesFile.readlines()]
+                if releUpdates:
+                    for releUpdate in releUpdates:
+                        byteUpd = bytes.fromhex(releUpdate)
+                        ser.write(byteUpd)
+            
+                    with open('/srv/tmp/relUpdate.txt', "w") as resetReleUpdatesFile:
+                        resetReleUpdatesFile.write("")
+
         except Exception as e:
             f = open("/var/log/getHexData.log", "a")
             f.write("%s RX Error: %s, message: %s\n" % (time.asctime(), str(e), inp))
             f.close()
             continue
+
         except:
             f = open("/var/log/getHexData.log", "a")
             f.write("%s Unknown RX Error! Message: %s\n" % (time.asctime(), inp))
@@ -48,7 +54,8 @@ def read_serial(ser):
 ser = serial.Serial(
     port=s_port,
     baudrate=b_rate,
-    timeout=3
+    timeout=2.5,
+    write_timeout=0.25
 )
 
 # print(">>> Receiving messages on radio interface from port %s ..." % s_port)
