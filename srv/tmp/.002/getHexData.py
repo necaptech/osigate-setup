@@ -54,7 +54,8 @@ def read_serial(ser):
 ser = serial.Serial(
     port=s_port,
     baudrate=b_rate,
-    timeout=3
+    timeout=3,
+    write_timeout=2.5
 )
 
 # print(">>> Receiving messages on radio interface from port %s ..." % s_port)
