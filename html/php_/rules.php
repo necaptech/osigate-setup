@@ -218,7 +218,7 @@
         shell_exec("echo \"" . $activeOsiRELEStxt . "\" > " . RULES_DIR . "osiRele");
 
         // Restart Python processes
-        shell_exec("kill -9 $(pgrep -f getHexData.py)");
+        shell_exec("sudo kill -9 $(pgrep -f getHexData.py)");
 
         // Redirect
         header("Location: /"); 
