@@ -90,8 +90,8 @@ if (file_exists("/srv/data/sysname")) {
         if (value && formula) {
 
             if (formula == 'x') {
-                
-                x = [value];
+
+                rawInput.value = Math.round(value);
 
             } else {
             
@@ -101,9 +101,9 @@ if (file_exists("/srv/data/sysname")) {
                 // console.log(equation + " => [" + x + " => " + Math.round(x[0].text('decimals')) + "]");
                 // console.log(x.length)
             
+                rawInput.value = Math.round(x[0].text('decimals'));
+            
             }
-
-            rawInput.value = Math.round(x[0].text('decimals'));
 
         } else {
             rawInput.value = '';
