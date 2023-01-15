@@ -6,9 +6,6 @@ import MySQLdb
 import time
 import os.path
 
-from datetime import datetime # TEMP
-import sys # TEMP
-
 conn = MySQLdb.connect(host= "localhost",
     user="root", passwd="root", db="TECNOQ")
 x = conn.cursor()
@@ -67,7 +64,7 @@ def read_serial(ser):
     
     while True:
 
-        print(relesStatus)
+        # print(relesStatus)
 
         inp=''
         try:
@@ -147,7 +144,7 @@ def read_serial(ser):
                     ser.write(byteMsg)
 
         except Exception as e:
-            print(e)
+           pass
 
 ser = serial.Serial(
     port=s_port,
