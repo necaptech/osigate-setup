@@ -60,6 +60,7 @@ CREATE TABLE `DEC_INPUT_TB` (
   `RTIME` varchar(50) NOT NULL,
   `CTIME` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `SND` varchar(5) DEFAULT 'n',
+  `ANAL` tinyint(4) DEFAULT 0,
   PRIMARY KEY (`ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
