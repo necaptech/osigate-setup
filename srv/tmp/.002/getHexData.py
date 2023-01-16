@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 from subprocess import call
+from datetime import datetime
 import serial
 import MySQLdb
 import time
@@ -26,6 +27,8 @@ onoff = 'ON'
 until = 'until'
 duration = 'duration'
 delayend = 'delayend'
+startRange = 'rStart'
+endRange = 'rEnd'
 
 rules = []
 relesStatus = {}
@@ -46,6 +49,15 @@ try:
                                     rules.append(Rule(releName, relPin, pinRuleData[1], pinRuleData[2], pinRuleData[3], pinRuleData[4], pinRuleData[5], pinRuleData[6]))
                                 except: pass
 except: pass
+
+rulesTimeRange = {}
+for relPin in range(1, 9):
+    try:
+        with open('/srv/data/timeRange.' + str(relPin), "r") as timeRangeFile:
+            rangeSt, rangeEn = [int(y.split(":")[0]) * 3600 + int(y.split(":")[1]) * 60 for y in [x.replace("\n", "") for x in timeRangeFile.readlines()]]
+            rulesTimeRange[relPin] = {startRange: rangeSt, endRange: rangeEn}
+    except:
+        rulesTimeRange[relPin] = {startRange: 0, endRange: 86400}
 
 # Get Rele Starting Status
 try:
@@ -99,6 +111,9 @@ def read_serial(ser):
                         if pinSt[onoff] and nowTime > pinSt[until]:
                             pinSt[onoff] = pinSt[until] = pinSt[duration] = 0
 
+                now = datetime.now()
+                todayRel = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
+
                 mustBeUpdated = []
                 updNODENames = []
                 for nodeUpdate in nodeUpdates:
@@ -111,14 +126,15 @@ def read_serial(ser):
                         for rule in rules:
                             if nodeID == rule.node:
                                 portValue = ports[(rule.port).upper()]
-                                if ((rule.compar == 'lt' and portValue < rule.value) or (rule.compar == 'gt' and portValue > rule.value)):
-                                    if rule.delay == 0 or int(time.time()) > relesStatus[rule.rele][rule.pin][delayend]:
-                                        relesStatus[rule.rele][rule.pin][onoff] = 1
-                                        relesStatus[rule.rele][rule.pin][until] = nowTime + (rule.duration * 60)
-                                        relesStatus[rule.rele][rule.pin][duration] = max(min([rule.duration, 65535]), 1)
-                                        relesStatus[rule.rele][rule.pin][delayend] = int(time.time()) + (rule.duration + rule.delay) * 60 
-                                        if rule.rele not in mustBeUpdated:
-                                            mustBeUpdated.append(rule.rele)
+                                if ((rule.compar == 'lt' and portValue < rule.value) or (rule.compar == 'gt' and portValue > rule.value)): # VALUE
+                                    if rulesTimeRange[rule.pin][startRange] <= todayRel <= rulesTimeRange[rule.pin][endRange]: # TIMERANGE
+                                        if rule.delay == 0 or int(time.time()) > relesStatus[rule.rele][rule.pin][delayend]: # DELAY
+                                            relesStatus[rule.rele][rule.pin][onoff] = 1
+                                            relesStatus[rule.rele][rule.pin][until] = nowTime + (rule.duration * 60)
+                                            relesStatus[rule.rele][rule.pin][duration] = max(min([rule.duration, 65535]), 1)
+                                            relesStatus[rule.rele][rule.pin][delayend] = int(time.time()) + (rule.duration + rule.delay) * 60 
+                                            if rule.rele not in mustBeUpdated:
+                                                mustBeUpdated.append(rule.rele)
 
                 for releName in mustBeUpdated:
                     relStat = relesStatus[releName]
