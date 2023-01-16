@@ -33,7 +33,7 @@ try:
         if notConvertedCheck[0:2] == '52':
 
             # Malformed
-            if (len(notConvertedCheck) < 120):
+            if (len(notConvertedCheck) < 72):
                 cur.execute("DELETE from %s where ID = '%s'" % (dbtbhex, notConvertedID))
                 con.commit()
                 continue
