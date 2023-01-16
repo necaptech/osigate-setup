@@ -112,7 +112,7 @@ def read_serial(ser):
                                 if ((rule.compar == 'lt' and portValue < rule.value) or (rule.compar == 'gt' and portValue > rule.value)):
                                     relesStatus[rule.rele][rule.pin][onoff] = 1
                                     relesStatus[rule.rele][rule.pin][until] = nowTime + (rule.duration * 60)
-                                    relesStatus[rule.rele][rule.pin][duration] = min([rule.duration, 65534])
+                                    relesStatus[rule.rele][rule.pin][duration] = max(min([rule.duration, 65535]), 1)
                                     if rule.rele not in mustBeUpdated:
                                         mustBeUpdated.append(rule.rele)
 
@@ -128,7 +128,7 @@ def read_serial(ser):
                     for pinNum, pinStat in relStat.items():
                         msg += 'ff' if pinStat[onoff] else '00' 
                         if pinStat[duration] == 0:
-                            msg += 'ffff'
+                            msg += '0000'
                         else:
                             msg += (f'{pinStat[duration]:x}'.zfill(4))
                             pinStat[duration] = 0
