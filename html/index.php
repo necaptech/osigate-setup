@@ -254,7 +254,7 @@ if (file_exists("/srv/data/sysname")) {
                                     </div>
                                     <div class="rule-delay rule-info">
                                         <span>ACCENDI RELÈ PER</span>
-                                        <input name="<?= "rele[" . $ReleName . "][" . $releId . "][duration]" ?>" type="number" value="<?= $releDuration ?>" placeholder="0" min=0 class="duration-value">
+                                        <input name="<?= "rele[" . $ReleName . "][" . $releId . "][duration]" ?>" type="number" value="<?= $releDuration ?>" placeholder="1" min=1 class="duration-value">
                                         <span>MINUTI E DISATTIVALO PER</span>
                                         <input name="<?= "rele[" . $ReleName . "][" . $releId . "][delay]" ?>" type="number" value="<?= $releDelay ?>" placeholder="0" min=0 class="delay-value">
                                         <span>MINUTI</span>
