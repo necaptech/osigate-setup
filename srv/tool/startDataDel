@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Start Delete Old Data
+python /srv/tmp/.002/deleteData.py &
