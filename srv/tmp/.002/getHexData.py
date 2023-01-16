@@ -26,6 +26,7 @@ class Rule:
 onoff = 'ON'
 until = 'until'
 duration = 'duration'
+delayend = 'delayend'
 
 rules = []
 relesStatus = {}
@@ -37,7 +38,7 @@ try:
                 if releName:
                     relesStatus[releName] = {}
                     for relPin in range(1, 9):
-                        relesStatus[releName][relPin] = {onoff: 0, until: 0, duration: 0}
+                        relesStatus[releName][relPin] = {onoff: 0, until: 0, duration: 0, delayend: 0}
                         pinFileName = '/srv/data/' + releName + '.' + str(relPin)
                         if (os.path.exists(pinFileName)):
                             with open(pinFileName, "r") as pinFile:
@@ -133,17 +134,17 @@ def read_serial(ser):
                             msg += (f'{pinStat[duration]:x}'.zfill(4))
                             pinStat[duration] = 0
 
-                    msg += f'{(sum(bytes.fromhex(msg))):x}'
+                    msg += (f'{(sum(bytes.fromhex(msg))):x}'.zfill(4))
                     msg += '0ff0'    
 
                     # Send Message (Twice)
                     byteMsg = bytes.fromhex(msg)
                     ser.write(byteMsg)
-                    sleep(2)
+                    time.sleep(2)
                     ser.write(byteMsg)
 
         except Exception as e:
-           pass
+           print(e)
 
 ser = serial.Serial(
     port=s_port,
