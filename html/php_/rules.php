@@ -141,7 +141,7 @@
                     $comparator = isset($releData[COMPARATOR]) ? $releData[COMPARATOR] : '';
                     $value = $releData[VALUE];
                     $formula = $releData[FORMULA] ? $releData[FORMULA] : '';
-                    $duration = !empty($releData[DURATION]) ? $releData[DURATION] : '0';
+                    $duration = !empty($releData[DURATION]) ? $releData[DURATION] : '1';
                     $delay = !empty($releData[DELAY]) ? $releData[DELAY] : '0';
 
                     // Get Comparator
