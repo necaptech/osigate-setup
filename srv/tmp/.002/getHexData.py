@@ -6,8 +6,7 @@ import MySQLdb
 import time
 import os.path
 
-conn = MySQLdb.connect(host= "localhost",
-    user="root", passwd="root", db="TECNOQ")
+conn = MySQLdb.connect(host= "localhost", user="root", passwd="root", db="TECNOQ")
 x = conn.cursor()
 s_port = '/dev/ttyS0'
 # s_port = '/dev/ttyUSB0'
@@ -80,12 +79,14 @@ def read_serial(ser):
                 conn.commit()
 
             # Get Current Data
+            conn = MySQLdb.connect(host= "localhost", user="root", passwd="root", db="TECNOQ")
+            x = conn.cursor()
             x.execute("SELECT * from %s where ANAL = 0 ORDER BY ID DESC" % (nodeconvdb))
             nodeUpdates = x.fetchall()
 
             # Remove Analyzed Data  
             x.execute("UPDATE %s SET ANAL = 1 WHERE ANAL = 0" % nodeconvdb)
-            conn.commit()
+            conn.commit() 
 
             # Do cool stuff            
             if (nodeUpdates and rules):
@@ -111,11 +112,13 @@ def read_serial(ser):
                             if nodeID == rule.node:
                                 portValue = ports[(rule.port).upper()]
                                 if ((rule.compar == 'lt' and portValue < rule.value) or (rule.compar == 'gt' and portValue > rule.value)):
-                                    relesStatus[rule.rele][rule.pin][onoff] = 1
-                                    relesStatus[rule.rele][rule.pin][until] = nowTime + (rule.duration * 60)
-                                    relesStatus[rule.rele][rule.pin][duration] = max(min([rule.duration, 65535]), 1)
-                                    if rule.rele not in mustBeUpdated:
-                                        mustBeUpdated.append(rule.rele)
+                                    if rule.delay == 0 or int(time.time()) > relesStatus[rule.rele][rule.pin][delayend]:
+                                        relesStatus[rule.rele][rule.pin][onoff] = 1
+                                        relesStatus[rule.rele][rule.pin][until] = nowTime + (rule.duration * 60)
+                                        relesStatus[rule.rele][rule.pin][duration] = max(min([rule.duration, 65535]), 1)
+                                        relesStatus[rule.rele][rule.pin][delayend] = int(time.time()) + (rule.duration + rule.delay) * 60 
+                                        if rule.rele not in mustBeUpdated:
+                                            mustBeUpdated.append(rule.rele)
 
                 for releName in mustBeUpdated:
                     relStat = relesStatus[releName]
@@ -144,7 +147,7 @@ def read_serial(ser):
                     ser.write(byteMsg)
 
         except Exception as e:
-           print(e)
+           pass
 
 ser = serial.Serial(
     port=s_port,
