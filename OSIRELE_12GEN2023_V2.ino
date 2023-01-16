@@ -48,15 +48,15 @@ const byte FINE_MSG_X = 15;
 const byte FINE_MSG_Y = 240 ;
 
 //------------------------DEFINIZIONE TIMER DEI RELE---------------------------------------
-long T_ON_RELE_1A = -1;
-long T_ON_RELE_2A = -1;
-long T_ON_RELE_3B = -1;
-long T_ON_RELE_4B = -1;
-long T_ON_RELE_5C = -1;
-long T_ON_RELE_6C = -1;
-long T_ON_RELE_7D = -1;
-long T_ON_RELE_8D = -1;
-long nowTime;
+unsigned long T_ON_RELE_1A;
+unsigned long T_ON_RELE_2A;
+unsigned long T_ON_RELE_3B;
+unsigned long T_ON_RELE_4B;
+unsigned long T_ON_RELE_5C;
+unsigned long T_ON_RELE_6C;
+unsigned long T_ON_RELE_7D;
+unsigned long T_ON_RELE_8D;
+unsigned long nowTime;
 
 unsigned int T_ON_RELE_1A_NEW;
 unsigned int T_ON_RELE_2A_NEW;
@@ -235,49 +235,49 @@ void loop () {
 
   if (Message_OK) { 
     T_ON_RELE_1A_NEW = word (message[9] , message[10]);
-    if (T_ON_RELE_1A_NEW != 65535) { 
+    if (T_ON_RELE_1A_NEW > 0) { 
       T_ON_RELE_1A = T_ON_RELE_1A_NEW*1000*60;
       T_ON_RELE_1A = T_ON_RELE_1A+millis();
     }
     
     T_ON_RELE_2A_NEW =  word (message[12], message[13]);
-    if (T_ON_RELE_2A_NEW != 65535) { 
+    if (T_ON_RELE_2A_NEW > 0) { 
       T_ON_RELE_2A = T_ON_RELE_2A_NEW*1000*60;
       T_ON_RELE_2A = T_ON_RELE_2A+millis();
     }
     
     T_ON_RELE_3B_NEW = word (message[15], message[16]);
-    if (T_ON_RELE_3B_NEW != 65535) { 
+    if (T_ON_RELE_3B_NEW > 0) { 
       T_ON_RELE_3B = T_ON_RELE_3B_NEW*1000*60;
       T_ON_RELE_3B = T_ON_RELE_3B+millis();
     }
     
     T_ON_RELE_4B_NEW = word (message[18], message[19]);
-    if (T_ON_RELE_4B_NEW != 65535) { 
+    if (T_ON_RELE_4B_NEW > 0) { 
       T_ON_RELE_4B = T_ON_RELE_4B_NEW*1000*60;
       T_ON_RELE_4B = T_ON_RELE_4B+millis();
     }
     
     T_ON_RELE_5C_NEW = word (message[21], message[22]);
-    if (T_ON_RELE_5C_NEW != 65535) { 
+    if (T_ON_RELE_5C_NEW > 0) { 
       T_ON_RELE_5C = T_ON_RELE_5C_NEW*1000*60;
       T_ON_RELE_5C = T_ON_RELE_5C+millis();
     }
     
     T_ON_RELE_6C_NEW = word (message[24], message[25]);
-    if (T_ON_RELE_6C_NEW != 65535) { 
+    if (T_ON_RELE_6C_NEW > 0) { 
       T_ON_RELE_6C = T_ON_RELE_6C_NEW*1000*60;
       T_ON_RELE_6C = T_ON_RELE_6C+millis();
     }
     
     T_ON_RELE_7D_NEW = word (message[27], message[28]);
-    if (T_ON_RELE_7D_NEW != 65535) { 
+    if (T_ON_RELE_7D_NEW > 0) { 
       T_ON_RELE_7D = T_ON_RELE_7D_NEW*1000*60;
       T_ON_RELE_7D = T_ON_RELE_7D+millis();
     }
     
     T_ON_RELE_8D_NEW = word (message[30], message[31]);
-    if (T_ON_RELE_8D_NEW != 65535) { 
+    if (T_ON_RELE_8D_NEW > 0) { 
       T_ON_RELE_8D = T_ON_RELE_8D_NEW*1000*60;
       T_ON_RELE_8D = T_ON_RELE_8D+millis();
     }
@@ -338,14 +338,14 @@ void loop () {
   
   if (!Message_OK) { 
     nowTime = millis();
-    if (T_ON_RELE_1A >= 0 and nowTime > T_ON_RELE_1A) { T_ON_RELE_1A = -1; if (digitalRead(CMD_RELE_1A)) { digitalWrite( CMD_RELE_1A, LOW );  Serial.println("RELE_1A=OFF "); } } // Se scaduto il timer spegni il relè
-    if (T_ON_RELE_2A >= 0 and nowTime > T_ON_RELE_2A) { T_ON_RELE_2A = -1; if (digitalRead(CMD_RELE_2A)) { digitalWrite( CMD_RELE_2A, LOW );  Serial.println("RELE_2A=OFF "); } } // Se scaduto il timer spegni il relè
-    if (T_ON_RELE_3B >= 0 and nowTime > T_ON_RELE_3B) { T_ON_RELE_3B = -1; if (digitalRead(CMD_RELE_3B)) { digitalWrite( CMD_RELE_3B, LOW );  Serial.println("RELE_3B=OFF "); } } // Se scaduto il timer spegni il relè
-    if (T_ON_RELE_4B >= 0 and nowTime > T_ON_RELE_4B) { T_ON_RELE_4B = -1; if (digitalRead(CMD_RELE_4B)) { digitalWrite( CMD_RELE_4B, LOW );  Serial.println("RELE_4B=OFF "); } } // Se scaduto il timer spegni il relè
-    if (T_ON_RELE_5C >= 0 and nowTime > T_ON_RELE_5C) { T_ON_RELE_5C = -1; if (digitalRead(CMD_RELE_5C)) { digitalWrite( CMD_RELE_5C, LOW );  Serial.println("RELE_5C=OFF "); } } // Se scaduto il timer spegni il relè
-    if (T_ON_RELE_6C >= 0 and nowTime > T_ON_RELE_6C) { T_ON_RELE_6C = -1; if (digitalRead(CMD_RELE_6C)) { digitalWrite( CMD_RELE_6C, LOW );  Serial.println("RELE_6C=OFF "); } } // Se scaduto il timer spegni il relè
-    if (T_ON_RELE_7D >= 0 and nowTime > T_ON_RELE_7D) { T_ON_RELE_7D = -1; if (digitalRead(CMD_RELE_7D)) { digitalWrite( CMD_RELE_7D, LOW );  Serial.println("RELE_7D=OFF "); } } // Se scaduto il timer spegni il relè
-    if (T_ON_RELE_8D >= 0 and nowTime > T_ON_RELE_8D) { T_ON_RELE_8D = -1; if (digitalRead(CMD_RELE_8D)) { digitalWrite( CMD_RELE_8D, LOW );  Serial.println("RELE_8D=OFF "); } } // Se scaduto il timer spegni il relè     
+    if (T_ON_RELE_1A != 0 and nowTime > T_ON_RELE_1A) { T_ON_RELE_1A = 0; if (digitalRead(CMD_RELE_1A)) { digitalWrite( CMD_RELE_1A, LOW );  Serial.println("RELE_1A=OFF "); } } // Se scaduto il timer spegni il relè
+    if (T_ON_RELE_2A != 0 and nowTime > T_ON_RELE_2A) { T_ON_RELE_2A = 0; if (digitalRead(CMD_RELE_2A)) { digitalWrite( CMD_RELE_2A, LOW );  Serial.println("RELE_2A=OFF "); } } // Se scaduto il timer spegni il relè
+    if (T_ON_RELE_3B != 0 and nowTime > T_ON_RELE_3B) { T_ON_RELE_3B = 0; if (digitalRead(CMD_RELE_3B)) { digitalWrite( CMD_RELE_3B, LOW );  Serial.println("RELE_3B=OFF "); } } // Se scaduto il timer spegni il relè
+    if (T_ON_RELE_4B != 0 and nowTime > T_ON_RELE_4B) { T_ON_RELE_4B = 0; if (digitalRead(CMD_RELE_4B)) { digitalWrite( CMD_RELE_4B, LOW );  Serial.println("RELE_4B=OFF "); } } // Se scaduto il timer spegni il relè
+    if (T_ON_RELE_5C != 0 and nowTime > T_ON_RELE_5C) { T_ON_RELE_5C = 0; if (digitalRead(CMD_RELE_5C)) { digitalWrite( CMD_RELE_5C, LOW );  Serial.println("RELE_5C=OFF "); } } // Se scaduto il timer spegni il relè
+    if (T_ON_RELE_6C != 0 and nowTime > T_ON_RELE_6C) { T_ON_RELE_6C = 0; if (digitalRead(CMD_RELE_6C)) { digitalWrite( CMD_RELE_6C, LOW );  Serial.println("RELE_6C=OFF "); } } // Se scaduto il timer spegni il relè
+    if (T_ON_RELE_7D != 0 and nowTime > T_ON_RELE_7D) { T_ON_RELE_7D = 0; if (digitalRead(CMD_RELE_7D)) { digitalWrite( CMD_RELE_7D, LOW );  Serial.println("RELE_7D=OFF "); } } // Se scaduto il timer spegni il relè
+    if (T_ON_RELE_8D != 0 and nowTime > T_ON_RELE_8D) { T_ON_RELE_8D = 0; if (digitalRead(CMD_RELE_8D)) { digitalWrite( CMD_RELE_8D, LOW );  Serial.println("RELE_8D=OFF "); } } // Se scaduto il timer spegni il relè     
   }
   
   //5---------------------------------------END CHECK TIMER DEI RELE------------------------------
