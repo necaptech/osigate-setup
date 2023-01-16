@@ -86,7 +86,7 @@ def read_serial(ser):
 
             # Remove Analyzed Data  
             x.execute("UPDATE %s SET ANAL = 1 WHERE ANAL = 0" % nodeconvdb)
-            conn.commit() 
+            conn.commit()
 
             # Do cool stuff            
             if (nodeUpdates and rules):
