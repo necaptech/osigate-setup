@@ -133,7 +133,6 @@ def read_serial(ser):
                             msg += (f'{pinStat[duration]:x}'.zfill(4))
                             pinStat[duration] = 0
 
-                    msg += '000000000000000000000000000000000000000000000000'
                     msg += f'{(sum(bytes.fromhex(msg))):x}'
                     msg += '0ff0'    
 
