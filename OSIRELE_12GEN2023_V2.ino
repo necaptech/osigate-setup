@@ -1,19 +1,22 @@
-// Prodotta a partire da OSIRELE_22DIC2019_rev1
-// per adattare al nuovo OsiGATE
+// Prodotta da PathsCode a partire da OSIRELE_22DIC2019_rev1 per adattare al nuovo OsiGATE
 
-//--------------------------------------------SETTAGGI------------------------------------------------
+//----------------SETTAGGI----------------
 long randNumber ;
 int randSleep ;
 word randTX ;
 int DELAY_BEE_ON = 100 ; // ritardo di stabilizzazione in millisecondi delle radio in accensione
 int DELAY_BEE_OFF = 2000 ; // ritardo di stabilizzazione in millisecondi delle radio in spegnimento
 
-const char ID_NODE_1  = 'R';
-const char ID_NODE_2  = '0';
-const char ID_NODE_3  = '0';
-const char ID_NODE_4  = '0';
-const char ID_NODE_5  = '2';
-const char ID_NODE_6  = '7';
+char ID_NODE_1;
+char ID_NODE_2;
+char ID_NODE_3;
+char ID_NODE_4;
+char ID_NODE_5;
+char ID_NODE_6;
+
+bool nameOk = false;
+bool nameChanged = false;
+byte newName[6];
 
 const byte SET_RADIO = A0 ; // set pin HIGH to enable radio 
 const byte POWER_BEE = 5;   // set pin LOW to power ON radio
@@ -29,25 +32,24 @@ const byte CMD_RELE_8D =  A1;   // set pin HIGH to enable relè
 
 const bool MostraStatus = false;  // mostra status pin ogni ciclo
 
-
-//--------------SERIALE VIRTUALE ----------------------------------------------------------------------
-
+//----------------SERIALE VIRTUALE----------------
 #include <SoftwareSerial.h>
+#include <EEPROM.h>
 #define rxpin 6
 #define txpin 13
 const int Seriale_Radio = 1200 ;   // velocità della seriale radio
 SoftwareSerial BEE_Serial(rxpin, txpin);
 
-//----------------DEFINIZIONE MESSAGGIO TX--------------------
+//----------------DEFINIZIONE MESSAGGIO TX----------------
 const byte Message_lenght = 36;
 byte message[Message_lenght];
 word Somma = 0;
 word Checksum = 0;
-boolean Message_OK = false ; 
+boolean Message_OK = false; 
 const byte FINE_MSG_X = 15;
 const byte FINE_MSG_Y = 240 ;
 
-//------------------------DEFINIZIONE TIMER DEI RELE---------------------------------------
+//----------------DEFINIZIONE TIMER DEI RELE----------------
 unsigned long T_ON_RELE_1A;
 unsigned long T_ON_RELE_2A;
 unsigned long T_ON_RELE_3B;
@@ -66,33 +68,99 @@ unsigned int T_ON_RELE_5C_NEW;
 unsigned int T_ON_RELE_6C_NEW;
 unsigned int T_ON_RELE_7D_NEW;
 unsigned int T_ON_RELE_8D_NEW;
-//--------------------TIMER AGGIRNAMENTO STATO------------------------------------
+//----------------TIMER AGGIRNAMENTO STATO----------------
 const int SEND_Time = 64;
 boolean UPDATE_OK = false ;
 
-//-------------------WATCHDOG-----------------------------------------------------
+//----------------WATCHDOG----------------
 #include <avr/wdt.h>  // inclusione libreria watchdog 
 
-//----------------ALTRE VARIABILI-------------------------------------
+//----------------ALTRE VARIABILI----------------
 static unsigned int  Cyclecounter = 0;
-int i;                          // variabile indice per conteggio
+int i;   // variabile indice per conteggio
 
-//-----------------------------SETUP-----------------------------------------------
+//--------------------------------SETUP--------------------------------
 
 void setup () {
 
   Serial.begin(Seriale_Radio);
-  Serial.print("OSIRELE_10GEN2023_v2");
-  Serial.print("   ID: ");
-
-  Serial.print(ID_NODE_1);
-  Serial.print(ID_NODE_2);
-  Serial.print(ID_NODE_3);
-  Serial.print(ID_NODE_4);
-  Serial.print(ID_NODE_5);
-  Serial.println(ID_NODE_6);
-
   randomSeed(analogRead(0)); 
+
+  // EEPROM.write(0, 0);   // cancella la R iniziale forzando l'inserimento di un nuovo nome, solo per testing
+
+  ID_NODE_1 = char(EEPROM.read(0));
+  ID_NODE_2 = char(EEPROM.read(1));
+  ID_NODE_3 = char(EEPROM.read(2));
+  ID_NODE_4 = char(EEPROM.read(3));
+  ID_NODE_5 = char(EEPROM.read(4));
+  ID_NODE_6 = char(EEPROM.read(5));
+
+  while (!nameOk) {
+
+    Serial.print("OSIRELE: ");
+    Serial.print(ID_NODE_1);
+    Serial.print(ID_NODE_2);
+    Serial.print(ID_NODE_3);
+    Serial.print(ID_NODE_4);
+    Serial.print(ID_NODE_5);
+    Serial.println(ID_NODE_6);
+
+    Serial.println("Puoi cambiare il nome entro 5 secondi");
+    delay(5000);
+
+    // Serial.println(Serial.available());
+    if (Serial.available() == 0) {
+      // Serial.println("Il nome non ha subito cambiamenti");
+      nameOk = (ID_NODE_1 == 'R');
+    } else if (Serial.available() == 7) {
+      for (i = 0; i < 6; i++) {
+        newName[i] = Serial.read();
+      }
+
+      if (newName[0] == 82) {
+        ID_NODE_1 = char(newName[0]);
+        ID_NODE_2 = char(newName[1]);
+        ID_NODE_3 = char(newName[2]);
+        ID_NODE_4 = char(newName[3]);
+        ID_NODE_5 = char(newName[4]);
+        ID_NODE_6 = char(newName[5]);
+
+        for (i = 0; i < 6; i++) {
+          EEPROM.write(i, newName[i]);
+        }
+        
+        nameOk = nameChanged = true;
+      } else {
+        Serial.println("Il formato del nome deve essere Rxxxxx");
+      }
+    } else {
+      Serial.println("Il nuovo nome deve essere di 6 caratteri");
+    }
+
+    Serial.println("");
+    if (!nameOk) { Serial.println("Nome corrente non valido"); Serial.println(""); }
+
+    while (Serial.available() >0 ) {
+      Serial.read();
+    }
+
+  }
+
+  if (nameChanged) {
+    
+    Serial.print("OSIRELE (Nuovo Nome): ");
+  
+    Serial.print(ID_NODE_1);
+    Serial.print(ID_NODE_2);
+    Serial.print(ID_NODE_3);
+    Serial.print(ID_NODE_4);
+    Serial.print(ID_NODE_5);
+    Serial.println(ID_NODE_6);
+  
+  }
+
+  Serial.println("Avvio in corso...");
+  Serial.println("");
  
   pinMode(CMD_RELE_1A, OUTPUT); // pin definition
   pinMode(CMD_RELE_2A, OUTPUT); // pin definition
@@ -113,24 +181,24 @@ void setup () {
   digitalWrite( CMD_RELE_8D, LOW );
 }
 
-//-----------------------------LOOP------------------------------------------------
-//-----------------------------LOOP------------------------------------------------
-//-----------------------------LOOP------------------------------------------------
+//--------------------------------LOOP--------------------------------
+//--------------------------------LOOP--------------------------------
+//--------------------------------LOOP--------------------------------
 
 void loop () {
   
   SoftwareSerial BEE_Serial(rxpin, txpin);
-  BEE_Serial.begin(Seriale_Radio);  //radio baud rate
+  BEE_Serial.begin(Seriale_Radio); //radio baud rate
   Serial.begin(Seriale_Radio);
-  wdt_reset();  // resetta il timer del watchdog
+  wdt_reset(); // resetta il timer del watchdog
   Serial.flush();
   //pinMode(POWER_SENS_D2,OUTPUT);
   pinMode(POWER_BEE, OUTPUT); // setto il pin 5 POWER_BEE come output
   //pinMode(POWER_BEE,INPUT);
   //digitalWrite(SET_RADIO, LOW);
-  digitalWrite(POWER_BEE, HIGH);   // sets the POWER_BEE on
-  //delay(DELAY_BEE_ON);                  // ritardo per stabilizzare  
-  //----------FORZA COMANDI-------------------------------
+  digitalWrite(POWER_BEE, HIGH); // sets the POWER_BEE on
+  //delay(DELAY_BEE_ON); // ritardo per stabilizzare  
+  //----------------FORZA COMANDI----------------
   /*
   digitalWrite( CMD_RELE_1A, LOW ); 
   digitalWrite( CMD_RELE_2A, LOW ); 
@@ -141,15 +209,14 @@ void loop () {
   digitalWrite( CMD_RELE_7D, LOW ); 
   digitalWrite( CMD_RELE_8D, LOW );
   */
- 
-  // ---------------------------------------
+  //----------------FORZA COMANDI----------------
 
   delay (3000);
 
   Cyclecounter ++; 
 
-  //Serial.print("Cyclecounter=");
-  //Serial.println(Cyclecounter, DEC);   
+  // Serial.print("Cyclecounter=");
+  // Serial.println(Cyclecounter, DEC);   
   if(Cyclecounter >= 201){Cyclecounter = 0; }  
   wdt_reset();  // resetta il timer del watchdog
   i=0;
@@ -159,10 +226,10 @@ void loop () {
     Serial.println(BEE_Serial.available(), DEC); 
   }
 
-  //1-------------RICEZIONE E CONTROLLO CORRETTEZZA MESSAGGIO RADIO-----------------------------------------------
+  //1----------------RICEZIONE E CONTROLLO CORRETTEZZA MESSAGGIO RADIO----------------
 
   while (BEE_Serial.available() > 0){   
-    message[i]=BEE_Serial.read ();  // se ci sono caratteri da leggere sulla seriale leggili tutti e mettili nell'array
+    message[i]=BEE_Serial.read (); // se ci sono caratteri da leggere sulla seriale leggili tutti e mettili nell'array
     // Serial.print(i, DEC);
     // Serial.print("=");
     // Serial.println(message[i], HEX); 
@@ -199,9 +266,9 @@ void loop () {
     }
   } 
 
-  //1---------------------------------------END RICEZIONE E CONTROLLO CORRETTEZZA MESSAGGIO RADIO------------------------------
+  //1----------------END RICEZIONE E CONTROLLO CORRETTEZZA MESSAGGIO RADIO----------------
 
-  //2---------------------------------------AGGIORNAMENTO STATO DEI RELE------------------------------
+  //2----------------AGGIORNAMENTO STATO DEI RELE----------------
   
   if (Message_OK) {  
     if (message[8]  == 0xFF){ digitalWrite( CMD_RELE_1A, HIGH );   }  else { digitalWrite( CMD_RELE_1A, LOW );     }
@@ -214,9 +281,9 @@ void loop () {
     if (message[29] == 0xFF){ digitalWrite( CMD_RELE_8D, HIGH );   }  else { digitalWrite( CMD_RELE_8D, LOW );     }
   }
     
-  //2---------------------------------------END AGGIORNAMENTO STATO DEI RELE------------------------------
+  //2----------------END AGGIORNAMENTO STATO DEI RELE----------------
 
-  //3----------LEGGI E STAMPA STATO RELE-------------------------------
+  //3----------------LEGGI E STAMPA STATO RELE----------------
 
   if (Message_OK || MostraStatus) {
     if (!digitalRead(CMD_RELE_1A)) { Serial.println("RELE_1A=OFF ");  } else { Serial.println("RELE_1A=ON ");   }
@@ -229,9 +296,9 @@ void loop () {
     if (!digitalRead(CMD_RELE_8D)) { Serial.println("RELE_8D=OFF ");  } else { Serial.println("RELE_8D=ON ");  }
   }
 
-  // ----------END LEGGI E STAMPA STATO RELE----------------------------- */
+  //3----------------END LEGGI E STAMPA STATO RELE----------------
   
-  //3---------------------------------------AGGIORNAMENTO TIMER DEI RELE------------------------------
+  //4----------------AGGIORNAMENTO TIMER DEI RELE----------------
 
   if (Message_OK) { 
     T_ON_RELE_1A_NEW = word (message[9] , message[10]);
@@ -287,14 +354,14 @@ void loop () {
   
   }
 
-  //3---------------------------------------END AGGIORNAMENTO TIMER DEI RELE------------------------------
+  //4----------------END AGGIORNAMENTO TIMER DEI RELE----------------
   
-  //Serial.print("millis= ");Serial.println(millis(), DEC);
-  //Serial.print("T_ON_RELE_1A= ");Serial.println(T_ON_RELE_1A, DEC);
+  // Serial.print("millis= ");Serial.println(millis(), DEC);
+  // Serial.print("T_ON_RELE_1A= ");Serial.println(T_ON_RELE_1A, DEC);
   wdt_reset();  // resetta il timer del watchdog
-  //delay(5000);
+  // delay(5000);
   
-  //4---------------------------------------MESSAGGIO RADIO DI ACK ------------------------------
+  //5----------------MESSAGGIO RADIO DI ACK----------------
   
   if (Message_OK) { 
       
@@ -324,17 +391,17 @@ void loop () {
     message[34] = 240;
     message[35] = 15;
     for (i = 0; i < Message_lenght ; i = i + 1) {BEE_Serial.write(message[i]);}  //  trasmissione messaggio ACK_1
-    //Serial.println("MESSAGGIO RADIO DI ACK - SPEDITO ");
+    // Serial.println("MESSAGGIO RADIO DI ACK - SPEDITO ");
     delay (1000);
     for (i = 0; i < Message_lenght ; i = i + 1) {BEE_Serial.write(message[i]);}  //  trasmissione messaggio ACK_2
     
-    Message_OK = false;  // compiute tutte le azioni in seguito a messaggio ricevuto OK, si resetta il flag
+    Message_OK = false; // compiute tutte le azioni in seguito a messaggio ricevuto OK, si resetta il flag
       
   }
     
-  //4---------------------------------------END MESSAGGIO RADIO DI AGGIORNAMENTO STATO------------------------------
+  //5----------------END MESSAGGIO RADIO DI AGGIORNAMENTO STATO----------------
   
-  //5---------------------------------------CHECK TIMER DEI RELE------------------------------
+  //6----------------CHECK TIMER DEI RELE----------------
   
   if (!Message_OK) { 
     nowTime = millis();
@@ -348,10 +415,11 @@ void loop () {
     if (T_ON_RELE_8D != 0 and nowTime > T_ON_RELE_8D) { T_ON_RELE_8D = 0; if (digitalRead(CMD_RELE_8D)) { digitalWrite( CMD_RELE_8D, LOW );  Serial.println("RELE_8D=OFF "); } } // Se scaduto il timer spegni il relè     
   }
   
-  //5---------------------------------------END CHECK TIMER DEI RELE------------------------------
+  //6----------------END CHECK TIMER DEI RELE----------------
+  
   wdt_reset();  // resetta il timer del watchdog
 
-  //6---------------------------------------MESSAGGIO RADIO DI STATO------------------------------
+  //7----------------MESSAGGIO RADIO DI STATO----------------
   // Serial.println(Cyclecounter);
   if (!Message_OK  && Cyclecounter % SEND_Time == 0) { 
     message[0] = ID_NODE_1;
@@ -387,11 +455,11 @@ void loop () {
     //for (i = 0; i < Message_lenght ; i = i + 1) { Serial.print(i, DEC); Serial.print("="); Serial.println(message[i], HEX); } 
   }
 
-  //6---------------------------------------END MESSAGGIO RADIO INFORMAZIONE STATO RELE------------------------------
+  //7----------------END MESSAGGIO RADIO INFORMAZIONE STATO RELE----------------
 
-  Message_OK =false ;
+  Message_OK = false ;
   
-  wdt_reset();  // resetta il timer del watchdog
+  wdt_reset(); // resetta il timer del watchdog
   delay(250);
 
   //--------------------------------------------
@@ -403,4 +471,4 @@ void loop () {
 
   //wdt_reset();  // resetta il timer del watchdog
 
-} //---------------------------END LOOP------------------------------------------------
+} //--------------------------------END LOOP--------------------------------
