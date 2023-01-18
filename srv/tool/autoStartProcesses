@@ -2,5 +2,5 @@
 
 # Start Get Hex Data
 if [[ $(ps -ef | grep '[g]etHexData.py' | wc -l) == 0 ]]; then 
-    python2 /srv/tmp/.002/getHexData.py &
+    python /srv/tmp/.002/getHexData.py &
 fi
