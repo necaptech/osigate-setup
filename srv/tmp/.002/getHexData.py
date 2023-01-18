@@ -19,7 +19,7 @@ relestatusdb = 'OSIRE_STATUS'
 class Rule:
     def __init__(self, rele, pin, node, port, compar, value, duration, delay):
         self.rele, self.pin = rele, pin
-        self.node, self.port = node, port
+        self.node, self.port = node, port.upper()
         self.compar, self.value = compar, int(value)
         self.duration, self.delay = int(duration), int(delay)
 
@@ -30,6 +30,7 @@ delayend = 'delayend'
 startRange = 'rStart'
 endRange = 'rEnd'
 
+# Get Rules
 rules = []
 relesStatus = {}
 try:
@@ -50,6 +51,7 @@ try:
                                 except: pass
 except: pass
 
+# Get Time Range
 rulesTimeRange = {}
 for relPin in range(1, 9):
     try:
@@ -72,20 +74,34 @@ try:
                 relesStatus[releStartStatus[1]][relPin][onoff] = (1 if releStartStatus[2][(relPin - 1) * 2 : relPin  * 2] == 'ff' else 0)
 except: pass
 
+# Get Inactivity Check
+try:
+    with open('/srv/data/tCONST', "r") as inactivityCheckFile:
+        inactivityCheck = int(inactivityCheckFile.read())
+except: inactivityCheck = 10
+
 def read_serial(ser):
     
+    # timeA = timeB = 0
     while True:
 
         # print(relesStatus)
 
         inp=''
         try:
-            inp = ser.read(size=70) 
+            # timeA = time.time()
+            # print(timeA - timeB) 
+            inp = ser.read(size=70)
+            # timeB = time.time() 
+            # print(timeB - timeA) 
+            # print(inp) 
+            # print(len(inp)) 
+
             if inp:
 
-                f = open("/srv/tmp/.002/getLoggg.log", "a")
-                f.write("%s\n%s\n%s\n\n" % (str(datetime.now()), inp, inp.hex()))
-                f.close()
+                # f = open("/srv/tmp/.002/getLoggg.log", "a")
+                # f.write("%s\n%s\n%s\n\n" % (str(datetime.now()), inp, inp.hex()))
+                # f.close()
                 
                 x.execute('''INSERT into HEX_INPUT_TB (HEXSTR) values (%s)''',[inp.hex()])
                 conn.commit()
@@ -97,13 +113,15 @@ def read_serial(ser):
             nodeUpdates = x.fetchall()
 
             # Remove Analyzed Data  
-            if (nodeUpdates):
+            if nodeUpdates:
                 x.execute("UPDATE %s SET ANAL = 1 WHERE ANAL = 0" % nodeconvdb)
                 conn.commit()
 
             # Do cool stuff            
             if (nodeUpdates and rules):
             
+                # print(nodeUpdates)
+
                 # Remove Old ON
                 nowTime = int(time.time())
                 for releN in relesStatus:
@@ -126,16 +144,30 @@ def read_serial(ser):
                         nodeID, ports['A1'], ports['A2'], ports['A3'], ports['A4'], ports['A5'], ports['A6'], ports['B7'], ports['B8'], ports['B9'], ports['B10'], ports['B11'], ports['B12'], ports['C13'], ports['C14'], ports['C15'], ports['C16'], ports['C17'], ports['C18'], ports['C19'], ports['C20'], ports['C21'], ports['C22'], ports['D23'], ports['D24'], ports['D25'], ports['D26'], ports['D27'], ports['D28'], ports['D29'], ports['BAT30'] = nodeUpdate[1:32]
                         for rule in rules:
                             if nodeID == rule.node:
-                                portValue = ports[(rule.port).upper()]
+                                portValue = ports[rule.port]
                                 if ((rule.compar == 'lt' and portValue < rule.value) or (rule.compar == 'gt' and portValue > rule.value)): # VALUE
                                     if rulesTimeRange[rule.pin][startRange] <= todayRel <= rulesTimeRange[rule.pin][endRange]: # TIMERANGE
                                         if rule.delay == 0 or int(time.time()) > relesStatus[rule.rele][rule.pin][delayend]: # DELAY
-                                            relesStatus[rule.rele][rule.pin][onoff] = 1
-                                            relesStatus[rule.rele][rule.pin][until] = nowTime + (rule.duration * 60)
-                                            relesStatus[rule.rele][rule.pin][duration] = max(min([rule.duration, 65535]), 1)
-                                            relesStatus[rule.rele][rule.pin][delayend] = int(time.time()) + (rule.duration + rule.delay) * 60 
-                                            if rule.rele not in mustBeUpdated:
-                                                mustBeUpdated.append(rule.rele)
+                                            
+                                            x.execute("SELECT * from %s where CID = '%s' LIMIT %s" % (nodeconvdb, rule.node, inactivityCheck))
+                                            checkNodeDatas = x.fetchall()
+                                            
+                                            # rule.port = 'B11'
+                                            activityChecked = False
+                                            portPos = 31 if rule.port == 'BAT30' else (int(rule.port[1:]) + 1)
+                                            
+                                            for checkNodeData in checkNodeDatas:
+                                                if checkNodeData[portPos] != portValue:
+                                                    activityChecked = True
+                                                    break
+
+                                            if activityChecked or inactivityCheck < 3:
+                                                relesStatus[rule.rele][rule.pin][onoff] = 1
+                                                relesStatus[rule.rele][rule.pin][until] = nowTime + (rule.duration * 60)
+                                                relesStatus[rule.rele][rule.pin][duration] = max(min([rule.duration, 65535]), 1)
+                                                relesStatus[rule.rele][rule.pin][delayend] = int(time.time()) + (rule.duration + rule.delay) * 60 
+                                                if rule.rele not in mustBeUpdated:
+                                                    mustBeUpdated.append(rule.rele)
 
                 for releName in mustBeUpdated:
                     relStat = relesStatus[releName]
@@ -169,7 +201,7 @@ def read_serial(ser):
 ser = serial.Serial(
     port=s_port,
     baudrate=b_rate,
-    timeout=2,
+    timeout=3,
     write_timeout=1
 )
 
