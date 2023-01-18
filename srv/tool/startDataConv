@@ -1,4 +1,4 @@
 #!/bin/bash
 
 # Start Conv Data
-python /srv/tmp/.002/convHexData.py &
+python3 /srv/tmp/.002/convHexData.py &
