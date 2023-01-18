@@ -83,9 +83,9 @@ def read_serial(ser):
             inp = ser.read(size=70) 
             if inp:
 
-                # f = open("/srv/tmp/.002/getLoggg.log", "a")
-                # f.write("%s\n%s\n\n" % (inp, inp.hex()))
-                # f.close()
+                f = open("/srv/tmp/.002/getLoggg.log", "a")
+                f.write("%s\n%s\n%s\n\n" % (str(datetime.now()), inp, inp.hex()))
+                f.close()
                 
                 x.execute('''INSERT into HEX_INPUT_TB (HEXSTR) values (%s)''',[inp.hex()])
                 conn.commit()
@@ -97,8 +97,9 @@ def read_serial(ser):
             nodeUpdates = x.fetchall()
 
             # Remove Analyzed Data  
-            x.execute("UPDATE %s SET ANAL = 1 WHERE ANAL = 0" % nodeconvdb)
-            conn.commit()
+            if (nodeUpdates):
+                x.execute("UPDATE %s SET ANAL = 1 WHERE ANAL = 0" % nodeconvdb)
+                conn.commit()
 
             # Do cool stuff            
             if (nodeUpdates and rules):
