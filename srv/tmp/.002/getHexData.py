@@ -83,9 +83,9 @@ def read_serial(ser):
             inp = ser.read(size=70) 
             if inp:
 
-                f = open("/srv/tmp/.002/getLoggg.log", "a")
-                f.write("%s\n%s\n\n" % (inp, inp.hex()))
-                f.close()
+                # f = open("/srv/tmp/.002/getLoggg.log", "a")
+                # f.write("%s\n%s\n\n" % (inp, inp.hex()))
+                # f.close()
                 
                 x.execute('''INSERT into HEX_INPUT_TB (HEXSTR) values (%s)''',[inp.hex()])
                 conn.commit()
@@ -142,20 +142,18 @@ def read_serial(ser):
                     # Build Message
                     msg = ""
                     for ch in releName:
-                        msg += hex(ord(ch))[2:]
+                        msg += f'{ord(ch):x}'
                     msg += '0000'
-
-                    print(msg)
                     
                     for pinNum, pinStat in relStat.items():
                         msg += 'ff' if pinStat[onoff] else '00' 
                         if pinStat[duration] == 0:
                             msg += '0000'
                         else:
-                            msg += hex(pinStat[duration])[2:].zfill(4)
+                            msg += (f'{pinStat[duration]:x}'.zfill(4))
                             pinStat[duration] = 0
 
-                    msg += hex(sum(bytes.fromhex(msg)))[2:].zfill(4)
+                    msg += (f'{(sum(bytes.fromhex(msg))):x}'.zfill(4))
                     msg += '0ff0'    
 
                     # Send Message (Twice)
