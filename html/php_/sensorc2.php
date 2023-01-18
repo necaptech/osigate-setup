@@ -18,9 +18,9 @@ include('menu.php');
 
     <div id="timeOUT">
       <form action="subphp_/script.php" method="post">
-        <h4 align="center" style="color:#e65c00">FAULTY SENSOR TIMEOUT</h4>
-        <b>Inhibit controller when value is constant for minutes: <br><i><?php $output=shell_exec("/var/www/html/script_/MANAGE_tCONST showTCONST"); print_r($output); ?></i>
-        <input id="tCONST" name="tCONST" placeholder="Insert new timeout" type="text">
+        <h4 align="center" style="color:#e65c00">FAULTY SENSOR LIMIT</h4>
+        <b>Inhibit controller when value is constant for consecutive data: <br><i><?php $output=shell_exec("/var/www/html/script_/MANAGE_tCONST showTCONST"); print_r($output); ?></i>
+        <input id="tCONST" name="tCONST" placeholder="Insert new limit" type="text">
         <input name="submit" type="submit" value="Change">
       </form>
     </div>
