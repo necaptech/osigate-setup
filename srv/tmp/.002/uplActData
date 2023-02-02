@@ -19,7 +19,7 @@ cmdcurlopt="-s -X PUT --max-time 5"
 cmdmysql=$(which mysql)
 cmdmysqlopt="-s -N -u$dbuser -p$dbpass $dbdb"
 
-sleep 20s
+sleep 15s
 
 if [[ $(grep -w run /srv/tmp/.002/upload.flg) ]]; then
   exit
@@ -27,108 +27,111 @@ else
   echo "run" > /srv/tmp/.002/upload.flg
 fi
 
-query="SELECT * FROM  $dbtbAct WHERE uploaded='n'order by id desc limit 10;"
+query="SELECT * FROM $dbtbAct WHERE UPL='n' order by ID desc limit 10;"
 notUploadedList=($($cmdmysql $cmdmysqlopt -e "$query")) #array
 
 numElements=${#notUploadedList[@]}
-numRecords=$(( numElements/7 ))
+numRecords=$(( numElements/6 ))
 #echo "notUploadedList: " $notUploadedList
 #echo "elements: " $numElements
 #echo " records: " $numRecords
 
-for (( i=0; i<$numRecords; i++ ))
-do
-	id=${notUploadedList[7*$i]}
-        day=${notUploadedList[7*$i+2]}
-        hour=${notUploadedList[7*$i+3]}
-	date_time=$(echo $day $hour)
-	status=${notUploadedList[7*$i+1]}
-	osiReHEX=${status:0:12}
-#	echo "id: " $id
-#        echo "Date Time: " $date_time
-        dtEpoch=$(date -d "$date_time" +%s)
-#        echo "dtEpoch: " $dtEpoch
-#	echo "status: " $status
-#	echo "osiReHEX: " $osiReHEX
-	osiRe=$(echo ${osiReHEX} | xxd -r -p)
-#	echo "osiReASCII: " $osiRe
-        idMsg=$((0x${status:12:4}))
-#        echo "Msg ID: " $idMsg
-	if [[ ${status:16:2} = "00" ]]; then 
+for ((i=0; i<$numRecords; i++ )) do
+	id=${notUploadedList[6*$i]}
+	releID=${notUploadedList[6*$i+1]}
+	status=${notUploadedList[6*$i+2]}
+	recDate=${notUploadedList[6*$i+3]}
+	recTime=${notUploadedList[6*$i+4]}
+	unix=$(date --date="$recDate $recTime" +"%s")
+	# echo "$status"
+
+	if [[ ${status:0:2} = "00" ]]; then 
 		sw1=0
 	else
 		sw1=1
 	fi
-#        echo "sw1: " $sw1
-	if [[ ${status:22:2} = "00" ]]; then 
+	# echo "sw1: " $sw1
+	
+	if [[ ${status:2:2} = "00" ]]; then 
 		sw2=0
 	else
 		sw2=1
 	fi
-#        echo "sw2: " $sw2
-	if [[ ${status:28:2} = "00" ]]; then 
+	# echo "sw2: " $sw2
+	
+	if [[ ${status:4:2} = "00" ]]; then 
 		sw3=0
 	else
 		sw3=1
 	fi
-#        echo "sw3: " $sw3
-	if [[ ${status:34:2} = "00" ]]; then 
+	# echo "sw3: " $sw3
+
+	if [[ ${status:6:2} = "00" ]]; then 
 		sw4=0
 	else
 		sw4=1
 	fi
-#        echo "sw4: " $sw4
-	if [[ ${status:40:2} = "00" ]]; then 
+	# echo "sw4: " $sw4
+	
+	if [[ ${status:8:2} = "00" ]]; then 
 		sw5=0
 	else
 		sw5=1
 	fi
-#        echo "sw5: " $sw5
-	if [[ ${status:46:2} = "00" ]]; then 
+    # echo "sw5: " $sw5
+	
+	if [[ ${status:10:2} = "00" ]]; then 
 		sw6=0
 	else
 		sw6=1
 	fi
-#        echo "sw6: " $sw6
-	if [[ ${status:52:2} = "00" ]]; then 
+	# echo "sw6: " $sw6
+	
+	if [[ ${status:12:2} = "00" ]]; then 
 		sw7=0
 	else
 		sw7=1
 	fi
-#        echo "sw7: " $sw7
-	if [[ ${status:58:2} = "00" ]]; then 
+	# echo "sw7: " $sw7
+	
+	if [[ ${status:14:2} = "00" ]]; then 
 		sw8=0
 	else
 		sw8=1
 	fi
-#        echo "sw8: " $sw8
+	# echo "sw8: " $sw8
 
-        Dstring="-d s[RA1]=$sw1 -d s[RA2]=$sw2 -d s[RB1]=$sw3 -d s[RB2]=$sw4 -d s[RC1]=$sw5 -d s[RC2]=$sw6 -d s[RD1]=$sw7 -d s[RD2]=$sw8 -d r=$idMsg -d t=$dtEpoch" 
+	Dstring="-d s[RA1]=$sw1 -d s[RA2]=$sw2 -d s[RB1]=$sw3 -d s[RB2]=$sw4 -d s[RC1]=$sw5 -d s[RC2]=$sw6 -d s[RD1]=$sw7 -d s[RD2]=$sw8 -d t=$unix" 
+	echo "$Dstring"
 
-        webhost=$(echo $host | sed -e "s/\//:$port\//3")api/nodes/$osiRe/add.json
-#        webhost="$host:$port/api/nodes/$osiRe/add.json"
-        result=$($cmdcurl $cmdcurlopt $Dstring $webhost)
-#        echo "Uploading to main server on $(date)" >> /var/log/uplData.log
-#        echo $cmdcurl $cmdcurlopt $Dstring $webhost >> /var/log/uplData.log
-#        echo $osiRe $Dstring  >> /var/log/uplData.log
-#        echo $result >> /var/log/uplData.log
+	webhost=$(echo $host | sed -e "s/\//:$port\//3")api/nodes/$releID/add.json
+	echo "$webhost"
+	# webhost="$host:$port/api/nodes/$osiRe/add.json"
+	
+	result=$($cmdcurl $cmdcurlopt $Dstring $webhost)
+	# echo "Uploading to main server on $(date)" >> /var/log/uplData.log
+	# echo $cmdcurl $cmdcurlopt $Dstring $webhost >> /var/log/uplData.log
+	# echo $osiRe $Dstring  >> /var/log/uplData.log
+	# echo $result >> /var/log/uplData.log
 
-#        if [[ $result =~ \{\"result\":true\} ]]; then
-        if [[ $result =~ "200 OK" ]]; then
-        # ------------------
-        # if [ -f $host2 ]; then
-        #	webhost2="$host2/api/nodes/$CID/add.json"
-        #	result2=$($cmdcurl $cmdcurlopt $D $RC $TS $webhost2)
-        #	echo "Uploading to additional web server on $(date)" >> /var/log/uplData.log
-        #	echo $result2 >> /var/log/uplData.log
-        #  else
-        #	echo "Additional web-server not configured $(date)" >> /var/log/uplData.log
-        # fi
-        # ------------------
-             query="UPDATE $dbtbAct set uploaded='y', utime=now() WHERE id='$id' ;"
-             $cmdmysql $cmdmysqlopt -e "$query"
-#             echo "$(date) $sw1" >> /var/log/uplActData.dat
-        fi
+	echo "$result"
+
+	# if [[ $result =~ \{\"result\":true\} ]]; then
+	#if [[ $result =~ "200 OK" ]]; then
+	# ------------------
+	# if [ -f $host2 ]; then
+	#	webhost2="$host2/api/nodes/$CID/add.json"
+	#	result2=$($cmdcurl $cmdcurlopt $D $RC $TS $webhost2)
+	#	echo "Uploading to additional web server on $(date)" >> /var/log/uplData.log
+	#	echo $result2 >> /var/log/uplData.log
+	# else
+	#	echo "Additional web-server not configured $(date)" >> /var/log/uplData.log
+	# fi
+	# ------------------
+	query="UPDATE $dbtbAct set UPL='y' WHERE id='$id' ;"
+	$cmdmysql $cmdmysqlopt -e "$query"
+	# echo "$(date) $sw1" >> /var/log/uplActData.dat
+	# fi
 done
 
 echo "stop" > /srv/tmp/.002/upload.flg
