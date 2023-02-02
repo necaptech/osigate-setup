@@ -153,19 +153,19 @@ if (file_exists("/srv/data/sysname")) {
                 <input name="submit" type="submit" value="Login" class="confirm-button cursor">
             </form>
         </div>
-        <div class="flex-vertical" id="login wifi-div">
+        <div class="flex-vertical wifi-div" id="login">
             <b>Credenziali WiFi</b>
-            <form action="" method="post" class="flex-vertical" id="login-form" autocomplete="off">
+            <form action="/php_/subphp_/script.php" method="post" class="flex-vertical" id="login-form" autocomplete="off">
                 <input autocomplete="off" name="username" type="text" class="none">
                 <input autocomplete="off" name="password" type="password" class="none">
                 <div class="flex">
                     <div class="flex">
                         <label>SSID </label>
-                        <input id="sys-ssid" name="sys-ssid" placeholder="SSID" type="text" autocomplete="off">
+                        <input id="sys-ssid" name="sys-ssid" placeholder="SSID" value="<?= shell_exec("/var/www/html/script_/MANAGE_wifi showSSIDnof") ?>" type="text" autocomplete="off">
                     </div>
                     <div class="flex">
                         <label>Password </label>
-                        <input id="sys-psk" name="sys-psk" placeholder="********" type="text" autocomplete="off">
+                        <input id="sys-psk" name="sys-psk" placeholder="********" value="<?= shell_exec("/var/www/html/script_/MANAGE_wifi showPSKnof") ?>" type="text" autocomplete="off">
                     </div>
                 </div>
                 <input name="submit" type="submit" value="Salva" class="confirm-button cursor">
