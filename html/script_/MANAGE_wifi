@@ -5,8 +5,8 @@ value1=$2
 value2=$3
 
 myConf=/etc/wpa_supplicant/wpa_supplicant.conf
-currSSID=$(/bin/cat $myConf|egrep -w ^ssid|cut -d"\"" -f2)
-currPSK=$(/bin/cat $myConf|egrep -w ^psk|cut -d"\"" -f2)
+currSSID=$(/bin/cat $myConf|egrep -w ssid|cut -d"\"" -f2)
+currPSK=$(/bin/cat $myConf|egrep -w psk|cut -d"\"" -f2)
 
 setWIFI_fun(){
 #    /bin/cat $myConf |sed "s/ssid=\"$currSSID\"/ssid=\"$value1\"/"|sed "s/psk=\"$currPSK\"/psk=\"$value2\"/" >/tmp/appo
