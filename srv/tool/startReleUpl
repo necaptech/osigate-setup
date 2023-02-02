@@ -1,0 +1,4 @@
+#!/bin/bash
+
+# Start Rele Data Upload
+bash /srv/tmp/.002/uplReleData
