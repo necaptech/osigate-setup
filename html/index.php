@@ -165,7 +165,7 @@ if (file_exists("/srv/data/sysname")) {
                     </div>
                     <div class="flex">
                         <label>Password </label>
-                        <input id="sys-psk" name="sys-psk" placeholder="********" value="<?= shell_exec("/var/www/html/script_/MANAGE_wifi showPSKnof") ?>" type="text" autocomplete="off">
+                        <input id="sys-psk" name="sys-psk" placeholder="<?= str_repeat("*", strlen(shell_exec("/var/www/html/script_/MANAGE_wifi showPSKnof"))) ?>" type="text" autocomplete="off">
                     </div>
                 </div>
                 <input name="submit" type="submit" value="Salva" class="confirm-button cursor">
