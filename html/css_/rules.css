@@ -152,6 +152,10 @@ button {
     margin-top: 25px;
 }
 
+.wifi-div {
+    margin-top: 48px !important;
+}
+
 .rules-title {
     margin: 36px 0 !important;
 }
