@@ -391,7 +391,7 @@ echo -e "<a href='../statistics.php'><b>Go To Statistics</b></a>"
 
 mode8(){
 allTables=$(/usr/bin/mysql  -s -N $dblogin -e "show tables"|grep $dbtbdec)
-lastcolumn=38
+lastcolumn=39
 
 for Table in $allTables; do
   allData=$(/usr/bin/mysql  -s -N $dblogin -e "select * from $Table")
@@ -426,7 +426,7 @@ echo -e "<a href='../../download/'><b>Go To Download Area</b></a>"
 }
 mode9(){
 allData=$(/usr/bin/mysql  -s -N $dblogin -e "select * from $dbtbdec")
-lastcolumn=38
+lastcolumn=39
 csvFile=CurrentExport_$(date +"%d%m%Y-%H%M%S").csv
 
 echo -e "ID;Client;A1;A2;A3;A4;A5;A6;B7;B8;B9;B10;B11;B12;C13;C14;C15;C16;C17;C18;C19;C20;C21;C22;C23;D24;D25;D26;D27;D28;D29;\
