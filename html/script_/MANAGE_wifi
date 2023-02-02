@@ -23,7 +23,7 @@ setWIFI_fun(){
           fi
   fi
 
-  wpa_supplicant -B -c $myConf -i wlan0
+  sudo reboot
 }
 
 showSSID_fun(){
