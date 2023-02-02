@@ -475,7 +475,7 @@ if [[ $opt ]]; then
 else
   allData=$(/usr/bin/mysql -s -N $dblogin -e "select * from DEC_INPUT_TB ORDER BY ID DESC LIMIT 100;")
 fi
-lastcolumn=38 #last col -1 (20:30:50 10/10/2015 are two columns)
+lastcolumn=39 #last col -1 (20:30:50 10/10/2015 are two columns)
 
 goBack
 echo -e "<table border=1 style='width:100%'>"
