@@ -81,6 +81,9 @@ try:
 except: inactivityCheck = 10
 
 def read_serial(ser):
+
+    # Init Time Check For Check
+    timeCfC = time.time()
     
     # timeA = timeB = 0
     while True:
@@ -89,14 +92,7 @@ def read_serial(ser):
 
         inp=''
         try:
-            # timeA = time.time()
-            # print(timeA - timeB) 
             inp = ser.read(size=70)
-            # timeB = time.time() 
-            # print(timeB - timeA) 
-            # print(inp) 
-            # print(len(inp)) 
-
             if inp:
 
                 # f = open("/srv/tmp/.002/getLoggg.log", "a")
@@ -106,24 +102,26 @@ def read_serial(ser):
                 x.execute('''INSERT into HEX_INPUT_TB (HEXSTR) values (%s)''',[inp.hex()])
                 conn.commit()
 
-            # Get Current Data
-            conn = MySQLdb.connect(host= "localhost", user="root", passwd="root", db="TECNOQ")
-            x = conn.cursor()
-            x.execute("SELECT * from %s where ANAL = 0 ORDER BY ID DESC" % (nodeconvdb))
-            nodeUpdates = x.fetchall()
-
-            # Remove Analyzed Data  
-            if nodeUpdates:
-                x.execute("UPDATE %s SET ANAL = 1 WHERE ANAL = 0" % nodeconvdb)
-                conn.commit()
+            # Get Now Time
+            nowTime = int(time.time())
 
             # Do cool stuff            
-            if (nodeUpdates and rules):
-            
-                # print(nodeUpdates)
+            if (nowTime > timeCfC and rules):
+
+                # Update Check Time
+                timeCfC = nowTime + 30
+
+                # Get Current Data
+                conn = MySQLdb.connect(host= "localhost", user="root", passwd="root", db="TECNOQ")
+                x = conn.cursor()
+                x.execute("SELECT * from %s where TS > %s ORDER BY ID DESC" % (nodeconvdb, nowTime - 1200))
+                nodeUpdates = x.fetchall()
+
+                print(nodeUpdates)
+
+                print(5/0)
 
                 # Remove Old ON
-                nowTime = int(time.time())
                 for releN in relesStatus:
                     for relPin in range(1, 9):
                         pinSt = relesStatus[releN][relPin] 
