@@ -23,9 +23,12 @@ class Rule:
         self.compar, self.value = compar, int(value)
         self.duration, self.delay = int(duration), int(delay)
 
+    def __str__(self):
+        return f"{self.rele}.{self.pin} {self.node}:{self.port} {self.compar} {self.value} ON FOR {self.duration}, FORCE OFF FOR {self.delay}"
+
 onoff = 'ON'
-until = 'until'
 duration = 'duration'
+until = 'until'
 delayend = 'delayend'
 startRange = 'rStart'
 endRange = 'rEnd'
@@ -41,7 +44,7 @@ try:
                 if releName:
                     relesStatus[releName] = {}
                     for relPin in range(1, 9):
-                        relesStatus[releName][relPin] = {onoff: 0, until: 0, duration: 0, delayend: 0}
+                        relesStatus[releName][relPin] = {onoff: 0, duration: 0, until: 0, delayend: 0}
                         pinFileName = '/srv/data/' + releName + '.' + str(relPin)
                         if (os.path.exists(pinFileName)):
                             with open(pinFileName, "r") as pinFile:
@@ -50,6 +53,8 @@ try:
                                     rules.append(Rule(releName, relPin, pinRuleData[1], pinRuleData[2], pinRuleData[3], pinRuleData[4], pinRuleData[5], pinRuleData[6]))
                                 except: pass
 except: pass
+
+# print([str(rule) for rule in rules])
 
 # Get Time Range
 rulesTimeRange = {}
@@ -114,19 +119,16 @@ def read_serial(ser):
                 # Get Current Data
                 conn = MySQLdb.connect(host= "localhost", user="root", passwd="root", db="TECNOQ")
                 x = conn.cursor()
-                x.execute("SELECT * from %s where TS > %s ORDER BY ID DESC" % (nodeconvdb, nowTime - 1200))
+                x.execute("SELECT * from %s where TS > %s ORDER BY ID DESC" % (nodeconvdb, nowTime - 2520)) 
                 nodeUpdates = x.fetchall()
-
-                print(nodeUpdates)
-
-                print(5/0)
+                # print(nodeUpdates)
 
                 # Remove Old ON
                 for releN in relesStatus:
                     for relPin in range(1, 9):
                         pinSt = relesStatus[releN][relPin] 
-                        if pinSt[onoff] and nowTime > pinSt[until]:
-                            pinSt[onoff] = pinSt[until] = pinSt[duration] = 0
+                        if pinSt[onoff] and nowTime >= pinSt[until]:
+                            pinSt[onoff] = pinSt[duration] = pinSt[until] = pinSt[delayend] = 0
 
                 now = datetime.now()
                 todayRel = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
@@ -145,7 +147,7 @@ def read_serial(ser):
                                 portValue = ports[rule.port]
                                 if ((rule.compar == 'lt' and portValue < rule.value) or (rule.compar == 'gt' and portValue > rule.value)): # VALUE
                                     if rulesTimeRange[rule.pin][startRange] <= todayRel <= rulesTimeRange[rule.pin][endRange]: # TIMERANGE
-                                        if rule.delay == 0 or int(time.time()) > relesStatus[rule.rele][rule.pin][delayend]: # DELAY
+                                        if rule.delay == 0 or nowTime > relesStatus[rule.rele][rule.pin][delayend]: # DELAY
                                             
                                             x.execute("SELECT * from %s where CID = '%s' LIMIT %s" % (nodeconvdb, rule.node, inactivityCheck))
                                             checkNodeDatas = x.fetchall()
@@ -166,6 +168,9 @@ def read_serial(ser):
                                                 relesStatus[rule.rele][rule.pin][delayend] = int(time.time()) + (rule.duration + rule.delay) * 60 
                                                 if rule.rele not in mustBeUpdated:
                                                     mustBeUpdated.append(rule.rele)
+
+                # print(relesStatus)
+                # print(5/0)
 
                 for releName in mustBeUpdated:
                     relStat = relesStatus[releName]
