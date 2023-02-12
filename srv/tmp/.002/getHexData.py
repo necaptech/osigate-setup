@@ -128,7 +128,7 @@ def read_serial(ser):
                     for relPin in range(1, 9):
                         pinSt = relesStatus[releN][relPin] 
                         if pinSt[onoff] and nowTime >= pinSt[until]:
-                            pinSt[onoff] = pinSt[duration] = pinSt[until] = pinSt[delayend] = 0
+                            pinSt[onoff] = pinSt[duration] = pinSt[until] = 0
 
                 now = datetime.now()
                 todayRel = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
