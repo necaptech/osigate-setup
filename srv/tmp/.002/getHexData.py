@@ -147,7 +147,7 @@ def read_serial(ser):
                                 portValue = ports[rule.port]
                                 if ((rule.compar == 'lt' and portValue < rule.value) or (rule.compar == 'gt' and portValue > rule.value)): # VALUE
                                     if rulesTimeRange[rule.pin][startRange] <= todayRel <= rulesTimeRange[rule.pin][endRange]: # TIMERANGE
-                                        if rule.delay == 0 or nowTime > relesStatus[rule.rele][rule.pin][delayend]: # DELAY
+                                        if nowTime > relesStatus[rule.rele][rule.pin][delayend]: # DELAY
                                             
                                             x.execute("SELECT * from %s where CID = '%s' LIMIT %s" % (nodeconvdb, rule.node, inactivityCheck))
                                             checkNodeDatas = x.fetchall()
@@ -165,7 +165,7 @@ def read_serial(ser):
                                                 relesStatus[rule.rele][rule.pin][onoff] = 1
                                                 relesStatus[rule.rele][rule.pin][until] = nowTime + (rule.duration * 60)
                                                 relesStatus[rule.rele][rule.pin][duration] = max(min([rule.duration, 65535]), 1)
-                                                relesStatus[rule.rele][rule.pin][delayend] = int(time.time()) + (rule.duration + rule.delay) * 60 
+                                                relesStatus[rule.rele][rule.pin][delayend] = nowTime + (rule.duration + rule.delay) * 60 
                                                 if rule.rele not in mustBeUpdated:
                                                     mustBeUpdated.append(rule.rele)
 
