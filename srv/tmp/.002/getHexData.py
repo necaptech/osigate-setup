@@ -94,7 +94,6 @@ def read_serial(ser):
     while True:
 
         # print(relesStatus)
-        # print()
 
         inp=''
         try:
@@ -104,8 +103,6 @@ def read_serial(ser):
                 # f = open("/srv/tmp/.002/getLoggg.log", "a")
                 # f.write("%s\n%s\n%s\n\n" % (str(datetime.now()), inp, inp.hex()))
                 # f.close()
-
-                # print(inp.hex())
                 
                 x.execute('''INSERT into HEX_INPUT_TB (HEXSTR) values (%s)''',[inp.hex()])
                 conn.commit()
@@ -125,10 +122,6 @@ def read_serial(ser):
                 x.execute("SELECT * from %s where TS > %s ORDER BY ID DESC" % (nodeconvdb, nowTime - 2520)) 
                 nodeUpdates = x.fetchall()
                 # print(nodeUpdates)
-                # print()
-
-                mustBeUpdated = []
-                updNODENames = []
 
                 # Remove Old ON
                 for releN in relesStatus:
@@ -136,12 +129,12 @@ def read_serial(ser):
                         pinSt = relesStatus[releN][relPin] 
                         if pinSt[onoff] and nowTime >= pinSt[until]:
                             pinSt[onoff] = pinSt[duration] = pinSt[until] = 0
-                            if releN not in mustBeUpdated:
-                                mustBeUpdated.append(releN)
 
                 now = datetime.now()
                 todayRel = (now - now.replace(hour=0, minute=0, second=0, microsecond=0)).total_seconds()
 
+                mustBeUpdated = []
+                updNODENames = []
                 for nodeUpdate in nodeUpdates:
                     if (nodeUpdate[1] not in updNODENames):
                         updNODENames.append(nodeUpdate[1])
@@ -177,7 +170,6 @@ def read_serial(ser):
                                                     mustBeUpdated.append(rule.rele)
 
                 # print(relesStatus)
-                # print()
                 # print(5/0)
 
                 for releName in mustBeUpdated:
@@ -202,8 +194,6 @@ def read_serial(ser):
 
                     # Send Message (Twice)
                     byteMsg = bytes.fromhex(msg)
-                    # print(msg)
-                    # print(byteMsg)
                     ser.write(byteMsg)
                     time.sleep(2)
                     ser.write(byteMsg)
