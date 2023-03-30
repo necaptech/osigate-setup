@@ -2,6 +2,7 @@
 
 from subprocess import call
 from datetime import datetime
+from random import random
 import serial
 import MySQLdb
 import time
@@ -89,6 +90,10 @@ def read_serial(ser):
 
     # Init Time Check For Check
     timeCfC = time.time()
+
+    # Init Misc
+    mustBeUpdated = []
+    repeatSend = False
     
     # timeA = timeB = 0
     while True:
@@ -105,6 +110,10 @@ def read_serial(ser):
                 # f.write("%s\n%s\n%s\n\n" % (str(datetime.now()), inp, inp.hex()))
                 # f.close()
 
+                f = open("/var/www/html/log.log", "a")
+                f.write("IN: %s (%s)\n" % (inp.hex(), str(datetime.now())))
+                f.close()
+
                 # print(inp.hex())
                 
                 x.execute('''INSERT into HEX_INPUT_TB (HEXSTR) values (%s)''',[inp.hex()])
@@ -114,7 +123,11 @@ def read_serial(ser):
             nowTime = int(time.time())
 
             # Do cool stuff            
-            if (nowTime > timeCfC and rules):
+            if ((nowTime > timeCfC or repeatSend) and rules):
+
+                f = open("/var/www/html/log.log", "a")
+                f.write("STATUS: %s (%s)\n" % (str(relesStatus), str(datetime.now())))
+                f.close()
 
                 # Update Check Time
                 timeCfC = nowTime + 30
@@ -127,8 +140,9 @@ def read_serial(ser):
                 # print(nodeUpdates)
                 # print()
 
-                mustBeUpdated = []
                 updNODENames = []
+                if (not repeatSend):
+                    mustBeUpdated = []
 
                 # Remove Old ON
                 for releN in relesStatus:
@@ -205,11 +219,17 @@ def read_serial(ser):
                     # print(msg)
                     # print(byteMsg)
                     ser.write(byteMsg)
-                    time.sleep(2)
-                    ser.write(byteMsg)
+
+                    f = open("/var/www/html/log.log", "a")
+                    f.write("OUT: %s (%s)\n" % (msg, str(now)))
+                    f.close()
+                
+                repeatSend = not repeatSend
+                time.sleep(random() * 2)
 
         except Exception as e:
-           pass
+            print(e)
+            pass
 
 ser = serial.Serial(
     port=s_port,
