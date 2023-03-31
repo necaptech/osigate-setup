@@ -33,7 +33,7 @@ try:
         if notConvertedCheck[0:2] == '52':
 
             # Malformed
-            if (len(notConvertedCheck) < 72):
+            if (len(notConvertedCheck) < 36):
                 cur.execute("DELETE from %s where ID = '%s'" % (dbtbhex, notConvertedID))
                 con.commit()
                 continue
@@ -47,14 +47,14 @@ try:
 
             rID = rIDa + rIDb + rIDc + rIDd + rIDe + rIDf
 
-            A1 = notConvertedCheck[16:18]
-            A2 = notConvertedCheck[22:24]
-            B3 = notConvertedCheck[28:30]
-            B4 = notConvertedCheck[34:36]
-            C5 = notConvertedCheck[40:42]
-            C6 = notConvertedCheck[46:48]
-            D7 = notConvertedCheck[52:54]
-            D8 = notConvertedCheck[58:60]
+            A1 = notConvertedCheck[12:14]
+            A2 = notConvertedCheck[14:16]
+            B3 = notConvertedCheck[16:18]
+            B4 = notConvertedCheck[18:20]
+            C5 = notConvertedCheck[20:22]
+            C6 = notConvertedCheck[22:24]
+            D7 = notConvertedCheck[24:26]
+            D8 = notConvertedCheck[26:28]
 
             relInfo = A1 + A2 + B3 + B4 + C5 + C6 + D7 + D8
             
