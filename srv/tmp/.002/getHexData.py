@@ -181,6 +181,7 @@ def read_serial(ser):
                                 if relTries < maxTries and relNam not in mustBeUpdated:
                                     mustBeUpdated.append(rule.rele)
 
+                    # Check Node for Rules
                     for nodeUpdate in nodeUpdates:
                         if (nodeUpdate[1] not in updNODENames):
                             updNODENames.append(nodeUpdate[1])
