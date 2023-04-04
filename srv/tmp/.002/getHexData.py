@@ -243,13 +243,13 @@ def read_serial(ser):
                     recentTries[releName] += 1
 
                     f = open("/var/www/html/log.log", "a") # TMP
-                    f.write("OUT: %s (%s)\n" % (msg, str(now))) # TMP
+                    f.write("OUT: %s (%s)\n" % (msg, str(now = datetime.now()))) # TMP
                     f.close() # TMP
                 
                     if len(mustBeUpdated) > 0:
                         updatingOtherReles = True
                 
-                time.sleep(random())
+                time.sleep(random() * 2)
 
                 # Update Check Time
                 nowTime = int(time.time())
