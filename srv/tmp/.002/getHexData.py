@@ -108,30 +108,29 @@ def read_serial(ser):
         try:
             inp = ser.read(size=70)
             if inp:
+                inp = inp.hex()
 
-                # f = open("/srv/tmp/.002/getLoggg.log", "a")
-                # f.write("%s\n%s\n%s\n\n" % (str(datetime.now()), inp, inp.hex()))
-                # f.close()
+                inpHasValue = False
+                for char in inp:
+                    if char != "0":
+                        inpHasValue = True
 
-                f = open("/var/www/html/log.log", "a") # TMP
-                f.write("IN: %s (%s)\n" % (inp.hex(), str(datetime.now()))) # TMP
-                f.close() # TMP
+                if inpHasValue:
+                    # f = open("/srv/tmp/.002/getLoggg.log", "a") # f.write("%s\n%s\n%s\n\n" % (str(datetime.now()), inp, inp.hex())) # f.close()
+                    with open("/var/www/html/log.log", "a") as f: # TMP
+                        f.write("IN: %s (%s)\n" % (inp, str(datetime.now()))) # TMP
 
-                # print(inp.hex())
+                    # print(inp.hex())
                 
-                x = conn.cursor()
-                x.execute('''INSERT into HEX_INPUT_TB (HEXSTR) values (%s)''',[inp.hex()])
-                conn.commit()
+                    x = conn.cursor()
+                    x.execute('''INSERT into HEX_INPUT_TB (HEXSTR) values (%s)''',[inp])
+                    conn.commit()
 
             # Get Now Time
             nowTime = int(time.time())
 
             # Do cool stuff            
             if (nowTime > timeCfC and rules):
-
-                f = open("/var/www/html/log.log", "a") # TMP
-                f.write("STATUS: %s (%s)\n" % (str(relesStatus), str(datetime.now()))) # TMP
-                f.close() # TMP
 
                 # Get Current Data
                 conn = MySQLdb.connect(host= "localhost", user="root", passwd="root", db="TECNOQ")
@@ -163,7 +162,7 @@ def read_serial(ser):
 
                     # Check Recent Tries
                     y = conn.cursor()
-                    y.execute("SELECT * from %s where Unix > '%s' ORDER BY ID DESC" % (relestatusdb, datetime.strftime(datetime.now() - timedelta(minutes=1), "%Y-%m-%d %H:%M:%S"))) 
+                    y.execute("SELECT * from %s where Unix > '%s' ORDER BY ID DESC" % (relestatusdb, datetime.strftime(datetime.now() - timedelta(seconds=30), "%Y-%m-%d %H:%M:%S"))) 
                     relesRecentDB = y.fetchall()   # print(relesRecentDB)
                     for relNam in recentTries:
                         relTries = recentTries[relNam]
@@ -218,6 +217,10 @@ def read_serial(ser):
 
                 updatingOtherReles = False
                 if len(mustBeUpdated) > 0:
+
+                    with open("/var/www/html/log.log", "a") as f: # TMP
+                        f.write("STATUS: %s (%s)\n" % (str(relesStatus), str(datetime.now()))) # TMP
+
                     releName = mustBeUpdated[0]
                     del mustBeUpdated[0]
 
@@ -242,9 +245,8 @@ def read_serial(ser):
 
                     recentTries[releName] += 1
 
-                    f = open("/var/www/html/log.log", "a") # TMP
-                    f.write("OUT: %s (%s)\n" % (msg, str(now = datetime.now()))) # TMP
-                    f.close() # TMP
+                    with open("/var/www/html/log.log", "a") as f: # TMP
+                        f.write("OUT: %s (%s)\n" % (msg, str(datetime.now()))) # TMP
                 
                     if len(mustBeUpdated) > 0:
                         updatingOtherReles = True
@@ -259,7 +261,10 @@ def read_serial(ser):
                     timeCfC = nowTime + 30
 
         except Exception as e:
-            print(e)
+            
+            with open("/var/www/html/log.log", "a") as f: # TMP
+                f.write("EXCEPTION: %s (%s)\n" % (str(e), str(datetime.now()))) # TMP
+
             pass
 
 ser = serial.Serial(
