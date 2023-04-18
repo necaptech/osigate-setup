@@ -269,7 +269,7 @@ def read_serial(ser):
                 if updatingOtherReles:
                     timeCfC = nowTime + 10
                 else:
-                    timeCfC = nowTime + 30
+                    timeCfC = nowTime + 24
 
         except Exception as e:
             
