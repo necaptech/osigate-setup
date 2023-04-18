@@ -104,7 +104,7 @@ def read_serial(ser):
     # timeA = timeB = 0
     while True:
 
-        print(recentTries)
+        # print(recentTries)   # KEEP FOR EXECUTED RULE CHECKS
         # print(relesStatus)
         # print()
 
@@ -121,8 +121,8 @@ def read_serial(ser):
 
                 if inpHasValue:
                     # f = open("/srv/tmp/.002/getLoggg.log", "a") # f.write("%s\n%s\n%s\n\n" % (str(datetime.now()), inp, inp.hex())) # f.close()
-                    with open("/var/www/html/log.log", "a") as f: # TMP
-                        f.write("IN: %s (%s)\n" % (inp, str(datetime.now()))) # TMP
+                    with open("/var/www/html/log.log", "a") as f: # TEMP
+                        f.write("IN: %s (%s)\n" % (inp, str(datetime.now()))) # TEMP
 
                     # print(inp.hex())
                 
@@ -174,7 +174,7 @@ def read_serial(ser):
                         if relTriesData[triesDone] > 0:
                             isSuccessful = False
                             for releRecent in relesRecentDB:
-                                print(releRecent[1])
+                                # print(releRecent[1])   # KEEP FOR EXECUTED RULE CHECKS
                                 if relTriesData[checkRes] in releRecent[1]:
                                     isSuccessful = True
                                     break
@@ -227,8 +227,8 @@ def read_serial(ser):
                 updatingOtherReles = False
                 if len(mustBeUpdated) > 0:
 
-                    with open("/var/www/html/log.log", "a") as f: # TMP
-                        f.write("STATUS: %s (%s)\n" % (str(relesStatus), str(datetime.now()))) # TMP
+                    with open("/var/www/html/log.log", "a") as f: # TEMP
+                        f.write("STATUS: %s (%s)\n" % (str(relesStatus), str(datetime.now()))) # TEMP
 
                     releName = mustBeUpdated[0]
                     del mustBeUpdated[0]
@@ -255,8 +255,8 @@ def read_serial(ser):
                     # print(byteMsg)
                     ser.write(byteMsg)
 
-                    with open("/var/www/html/log.log", "a") as f: # TMP
-                        f.write("OUT: %s (%s)\n" % (msg, str(datetime.now()))) # TMP
+                    with open("/var/www/html/log.log", "a") as f: # TEMP
+                        f.write("OUT: %s (%s)\n" % (msg, str(datetime.now()))) # TEMP
                 
                     if len(mustBeUpdated) > 0:
                         updatingOtherReles = True
@@ -273,8 +273,8 @@ def read_serial(ser):
         except Exception as e:
             
             # print(e)
-            with open("/var/www/html/log.log", "a") as f: # TMP
-                f.write("EXCEPTION: %s (%s)\n" % (str(e), str(datetime.now()))) # TMP
+            with open("/var/www/html/log.log", "a") as f: # TEMP
+                f.write("EXCEPTION: %s (%s)\n" % (str(e), str(datetime.now()))) # TEMP
 
             pass
 
