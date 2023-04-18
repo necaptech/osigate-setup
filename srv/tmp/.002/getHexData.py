@@ -14,6 +14,7 @@ s_port = '/dev/ttyS0'
 # s_port = '/dev/ttyUSB0'
 b_rate = 1200
 
+hexinputdb = 'HEX_INPUT_TB'
 nodeconvdb = 'DEC_INPUT_TB'
 relestatusdb = 'OSIRE_STATUS'
 
@@ -33,7 +34,9 @@ until = 'until'
 delayend = 'delayend'
 startRange = 'rStart'
 endRange = 'rEnd'
-maxTries = 8
+triesDone = 'tries'
+checkRes = 'checkRes'
+maxTries = 8 // 2 + 1
 
 # Get Rules
 rules = []
@@ -45,7 +48,7 @@ try:
             relesNames = [x.replace("\n", "") for x in relesNamesFile.readlines()]
             for releName in relesNames:
                 if releName:
-                    recentTries[releName] = 0
+                    recentTries[releName] = {triesDone: 0, checkRes: ""}
                     relesStatus[releName] = {}
                     for relPin in range(1, 9):
                         relesStatus[releName][relPin] = {onoff: 0, until: 0, delayend: 0}
@@ -101,6 +104,7 @@ def read_serial(ser):
     # timeA = timeB = 0
     while True:
 
+        print(recentTries)
         # print(relesStatus)
         # print()
 
@@ -162,22 +166,26 @@ def read_serial(ser):
 
                     # Check Recent Tries
                     y = conn.cursor()
-                    y.execute("SELECT * from %s where Unix > '%s' ORDER BY ID DESC" % (relestatusdb, datetime.strftime(datetime.now() - timedelta(seconds=30), "%Y-%m-%d %H:%M:%S"))) 
-                    relesRecentDB = y.fetchall()   # print(relesRecentDB)
+                    y.execute("SELECT * from %s where RTIME > '%s' ORDER BY ID DESC" % (hexinputdb, datetime.strftime(datetime.now() - timedelta(seconds=45), "%Y-%m-%d %H:%M:%S"))) 
+                    relesRecentDB = y.fetchall()
+                    # print(relesRecentDB)   # print(recentTries)
                     for relNam in recentTries:
-                        relTries = recentTries[relNam]
-                        if relTries > 0:
-                            isThereResponse = False
-                            for relesRecent in relesRecentDB:
-                                if relesRecent[1] == relNam:
-                                    isThereResponse = True
+                        relTriesData = recentTries[relNam]
+                        if relTriesData[triesDone] > 0:
+                            isSuccessful = False
+                            for releRecent in relesRecentDB:
+                                print(releRecent[1])
+                                if relTriesData in releRecent[1]:
+                                    isSuccessful = True
                                     break
 
-                            if isThereResponse:
-                                recentTries[relNam] = 0
+                            print(isSuccessful)
+
+                            if isSuccessful:
+                                recentTries[relNam][triesDone] = 0
                             else:
-                                recentTries[relNam] += 1
-                                if relTries < maxTries and relNam not in mustBeUpdated:
+                                if relTriesData[triesDone] < maxTries and relNam not in mustBeUpdated:
+                                    recentTries[relNam][triesDone] += 1
                                     mustBeUpdated.append(rule.rele)
 
                     # Check Node for Rules
@@ -210,6 +218,7 @@ def read_serial(ser):
                                                     relesStatus[rule.rele][rule.pin][onoff] = 1
                                                     relesStatus[rule.rele][rule.pin][until] = nowTime + (rule.duration * 60)
                                                     relesStatus[rule.rele][rule.pin][delayend] = nowTime + (rule.duration + rule.delay) * 60 
+                                                    recentTries[rule.rele][triesDone] = 0
                                                     if rule.rele not in mustBeUpdated:
                                                         mustBeUpdated.append(rule.rele)
 
@@ -234,6 +243,9 @@ def read_serial(ser):
                     for pinNum, pinStat in relStat.items():
                         msg += 'ff' if pinStat[onoff] else '00' 
 
+                    recentTries[releName][checkRes] = msg
+                    recentTries[releName][triesDone] += 1
+
                     msg += (f'{(sum(bytes.fromhex(msg))):x}'.zfill(4))
                     msg += '0ff0'    
 
@@ -242,8 +254,6 @@ def read_serial(ser):
                     # print(msg)
                     # print(byteMsg)
                     ser.write(byteMsg)
-
-                    recentTries[releName] += 1
 
                     with open("/var/www/html/log.log", "a") as f: # TMP
                         f.write("OUT: %s (%s)\n" % (msg, str(datetime.now()))) # TMP
@@ -262,6 +272,7 @@ def read_serial(ser):
 
         except Exception as e:
             
+            print(e)
             with open("/var/www/html/log.log", "a") as f: # TMP
                 f.write("EXCEPTION: %s (%s)\n" % (str(e), str(datetime.now()))) # TMP
 
