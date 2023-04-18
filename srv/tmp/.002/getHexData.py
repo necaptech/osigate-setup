@@ -175,14 +175,14 @@ def read_serial(ser):
                             isSuccessful = False
                             for releRecent in relesRecentDB:
                                 print(releRecent[1])
-                                if relTriesData in releRecent[1]:
+                                if relTriesData[checkRes] in releRecent[1]:
                                     isSuccessful = True
                                     break
 
-                            print(isSuccessful)
-
+                            # print(isSuccessful)
                             if isSuccessful:
                                 recentTries[relNam][triesDone] = 0
+                                recentTries[relNam][checkRes] = ""
                             else:
                                 if relTriesData[triesDone] < maxTries and relNam not in mustBeUpdated:
                                     recentTries[relNam][triesDone] += 1
@@ -272,7 +272,7 @@ def read_serial(ser):
 
         except Exception as e:
             
-            print(e)
+            # print(e)
             with open("/var/www/html/log.log", "a") as f: # TMP
                 f.write("EXCEPTION: %s (%s)\n" % (str(e), str(datetime.now()))) # TMP
 
