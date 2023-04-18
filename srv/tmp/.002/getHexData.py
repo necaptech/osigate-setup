@@ -8,8 +8,6 @@ import MySQLdb
 import time
 import os.path
 
-conn = MySQLdb.connect(host= "localhost", user="root", passwd="root", db="TECNOQ")
-x = conn.cursor()
 s_port = '/dev/ttyS0'
 # s_port = '/dev/ttyUSB0'
 b_rate = 1200
@@ -100,6 +98,9 @@ def read_serial(ser):
     # Init Misc
     mustBeUpdated = []
     updatingOtherReles = False
+
+    conn = MySQLdb.connect(host= "localhost", user="root", passwd="root", db="TECNOQ")
+    x = conn.cursor()
     
     # timeA = timeB = 0
     while True:
