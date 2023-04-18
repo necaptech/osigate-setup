@@ -36,7 +36,7 @@ startRange = 'rStart'
 endRange = 'rEnd'
 triesDone = 'tries'
 checkRes = 'checkRes'
-maxTries = 8 // 2 + 1
+maxTries = (8 * 3) // 2 
 
 # Get Rules
 rules = []
